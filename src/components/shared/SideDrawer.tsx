@@ -30,8 +30,8 @@ const SideDrawer = () => {
           <nav className="ps-2 pt-8">
             <ul className="flex flex-col gap-2 space-x-4">
               {navlinks.map((link: NavLink) =>
-                <li key={link.path} className=" border-b-2 border-transparent py-1 hover:border-black transition">
-                  <Link href={link.path} className=" py-2 px-2">
+                <li key={link.path} className=" border-b-2  py-1 px-2 mx-3 border-black transition">
+                  <Link href={link.path} className="block py-1  ">
                     {link.name}
                   </Link>
                 </li>
@@ -39,10 +39,10 @@ const SideDrawer = () => {
             </ul>
           </nav>
           <DrawerFooter>
-            <Button>Submit</Button>
+            {/* <Button>Submit</Button>
             <DrawerClose asChild>
               <Button variant="outline">Cancel</Button>
-            </DrawerClose>
+            </DrawerClose> */}
           </DrawerFooter>
         </div>
       </DrawerContent>

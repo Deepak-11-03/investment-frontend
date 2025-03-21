@@ -14,6 +14,11 @@ const Navbar = () => {
                         </Link>
                     </li>
                 )}
+                 <li className=" border-b-2 border-transparent py-1 hover:border-black transition">
+                        <Link href={'/manage-user'} className=" py-2 px-2">
+                            Manage user
+                        </Link>
+                    </li>
             </ul>
         </nav>
     )

@@ -1,8 +1,13 @@
+'use client'
 import React from 'react'
-import InputField from '../shared/InputField'
+import InputField from '../common/InputField'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Form, Formik } from 'formik'
+import * as Yup from 'yup'
+import { Button } from '../ui/button'
+import { ContactFormProps } from '@/types/type'
 
-const ContactUsForm = () => {
+const ContactUsForm = ({ handleSubmit }: ContactFormProps) => {
     return (
         <Card className='md:w-[30rem] w-full mx-auto'>
 
@@ -11,30 +16,31 @@ const ContactUsForm = () => {
             </CardHeader>
             {/* <h2 className="text-2xl font-semibold text-gray-800 mb-4">Send Us a Message</h2> */}
             <CardContent className="grid gap-4">
-                <form className="space-y-4">
+                <Formik
+                    initialValues={{ name: '', email: '', message: '' }}
+                    validationSchema={Yup.object({
+                        name: Yup.string().required('Name is required'),
+                        email: Yup.string().email('Invalid email address').required('Email is required'),
+                        message: Yup.string().required('Message is required'),
+                    })}
+                    onSubmit={async (values, { setSubmitting }) => {
+                        handleSubmit(values)
+                    }}
+                >
+                    {({ errors, touched, isSubmitting }) => (
+                        <Form className="flex flex-col gap-4">
+                            <InputField type='text' name='name' label='Full Name' error={errors.name} placeholder="Enter your name" />
+                            <InputField type='email' name='email' label='Email Address' error={errors.email} placeholder="Enter your email" />
+                            <InputField type='textarea' name='message' label='Message' error={errors.message} placeholder="Type message" />
+                            <Button type="submit" className=" cursor-pointer" >
+                                Login
+                            </Button>
+                        </Form>
+                    )}
+                </Formik>
 
-                    <InputField type='text' name='name' label='Full Name' placeholder="Enter your name" required />
-                    <InputField type='email' name='email' label='Email Address' placeholder="Enter your email" required />
 
-                    <div>
-                        <label htmlFor="message" className="block text-sm/6 font-medium text-gray-900">
-                            Message
-                        </label>
-                        <textarea
-                            name="message"
-                            placeholder="Write your message here..."
-                            rows={4}
-                            className="w-full p-2 border rounded-md  resize-none"
-                            required
-                        ></textarea>
-                    </div>
-                    <button
-                        type="submit"
-                        className="w-full bg-black text-white p-2 rounded-md hover:bg-gray-800 transition cursor-pointer"
-                    >
-                        Send Message
-                    </button>
-                </form>
+                {/* </form> */}
             </CardContent>
         </Card>
     )

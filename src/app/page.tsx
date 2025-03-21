@@ -24,7 +24,7 @@ export default function Home() {
 
             {/* Investment Opportunities */}
             <section className="bg-gray-50 py-12">
-                <div className="max-w-7xl mx-auto px-6 text-center">
+                <div className=" mx-auto px-6 text-center">
                     <h2 className="text-3xl font-bold text-gray-800">Investment Opportunities</h2>
                     <p className="mt-4 text-gray-600">Explore our diverse range of investment plans tailored to your needs.</p>
                     <div className="grid md:grid-cols-3 gap-6 mt-8">
