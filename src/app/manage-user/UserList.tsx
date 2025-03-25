@@ -8,6 +8,7 @@ import {
   } from "@/components/ui/table";
   import ManageUserMenu from '@/components/ManageUserMenu';
 import calculateTotalAmount from '@/utils/calculateTotalAmount';
+import moment from 'moment';
 // import { getAllUsers } from '@/services/user.service';
 
 
@@ -37,10 +38,10 @@ const UserList = async() => {
     {/* <TableCaption>A list of your recent .</TableCaption> */}
     <TableHeader>
       <TableRow>
-        <TableHead className="w-[100px]">Name</TableHead>
-        <TableHead>Invested</TableHead>
-        <TableHead>Date</TableHead>
-        <TableHead className="text-right">Total Payout</TableHead>
+        <TableHead className="w-[150px]">Name</TableHead>
+        <TableHead className="w-[250px] text-right ">Invested</TableHead>
+        <TableHead className='w-[400px] text-center'>Date</TableHead>
+        <TableHead className="text-right w-[100px]">Total Payout</TableHead>
         <TableHead className="text-right">Manage</TableHead>
       </TableRow>
     </TableHeader>
@@ -48,8 +49,8 @@ const UserList = async() => {
         {allUsers?.map((user:any) => (
       <TableRow key={user?._id} className="hover:bg-transparent">
         <TableCell className="font-medium">{user?.name}</TableCell>
-            <TableCell>${calculateTotalAmount(user,"credit")}</TableCell>
-        <TableCell>{user?.createdAt}</TableCell>
+            <TableCell className='text-right'>${calculateTotalAmount(user,"credit")}</TableCell>
+        <TableCell className='text-center'>{moment(user?.createdAt).format("MMM DD yyyy hh:mm A")}</TableCell>
             <TableCell className="text-right">${calculateTotalAmount(user, "debit")}</TableCell>
         <TableCell className="text-right" >
           <ManageUserMenu />

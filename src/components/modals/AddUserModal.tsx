@@ -4,23 +4,20 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import UserAddForm from "@/components/forms/UserAddForm";
-import { createUser } from '@/services/user.service';
-import handleApiRequest from '@/helpers/handleRequest';
+
+import { addUserAndRevalidate } from '@/actions/userActions';
 
 const AddUserModal = () => {
 
     const [open, setOpen] = useState(false)
-    const [createdUser, setCreatedUser] = useState(null)
     const handleToggle = () => {
         setOpen(!open)
     }
 
     const onSubmit = async (data: any) => {
 
-        handleApiRequest(createUser, data, (res: any) => {
-            handleToggle()
-          console.log(res)
-        })
+        await addUserAndRevalidate(data); // Call server action
+        handleToggle();
       };
     
 

@@ -38,6 +38,7 @@ export interface ContactUs {
 
 export interface LoginFormProps {
     handleSubmit: (val: Login) => void
+    isLoading?:boolean   
 }
 export interface ContactFormProps {
     handleSubmit: (val: ContactUs) => void

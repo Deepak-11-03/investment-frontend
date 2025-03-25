@@ -5,8 +5,9 @@ import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import { Button } from "../ui/button";
 import { LoginFormProps } from "@/types/type";
+import { Loader2 } from "lucide-react";
 
-const LoginForm = ({ handleSubmit }: LoginFormProps) => {
+const LoginForm = ({ handleSubmit ,isLoading}: LoginFormProps) => {
   return (
     <div className="flex flex-1 flex-col justify-center items-center lg:px-8 px-6">
       <h2 className="text-2xl/9 text-center text-gray-900 font-bold mt-10 tracking-tight">
@@ -31,7 +32,8 @@ const LoginForm = ({ handleSubmit }: LoginFormProps) => {
             
             <InputField type="password" name="password" label="Password" error={errors.password} placeholder="Enter password" />
             {/* {errors.password && <ErrorField message={errors.password}/> } */}
-            <Button type="submit" className="cursor-pointer" >
+            <Button disabled={isLoading} type="submit" className="cursor-pointer" >
+              {isLoading && <Loader2 className="animate-spin" />}
               Login
             </Button>
 

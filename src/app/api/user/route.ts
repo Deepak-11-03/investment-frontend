@@ -5,13 +5,14 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from 'jsonwebtoken'
 import Transaction from "@/models/Investment";
-import { userAddValidation } from "./validation";
+
 import authOptions from "@/authOptions";
 import { getServerSession } from "next-auth/next";
 import { getToken } from "next-auth/jwt";
 import { NextApiRequest } from "next";
+import { userAddValidation } from "@/utils/validation";
 
-export async function POST(req: Request,res:Response) {
+export async function POST(req: Request) {
 
 
     const session = await getServerSession(authOptions);
@@ -56,37 +57,13 @@ export async function POST(req: Request,res:Response) {
 
 }
 
-export async function GET(req: NextApiRequest) {
+export async function GET() {
 
     try {
 
         await connectDB();
 
-        const token = (await cookies()).get("next-auth.session-token")?.value;
-
-        console.log('ttttttttssssssssssssssssssssssss', token)
-        console.log('first')
-
-        // const token = (await cookies()).get("token")?.value;
-        // if (!token) {
-        //   return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-        // }
-
-        // // Verify token
-        // const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
-
-        // if (!decoded || !decoded.userId) {
-        //   return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 });
-        // }
-
-
-        // const adminUser = await User.findOne({_id:decoded?.userId,isAdmin:true})
-
-        // if(!adminUser){
-        //     return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 });
-        // }
-
-        // { $match: { _id: new mongoose.Types.ObjectId(userId) } },
+       
         const users = await User.aggregate([
             {
                 $match: { isAdmin: false } // Get only non-admin users 
