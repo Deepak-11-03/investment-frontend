@@ -46,3 +46,25 @@ export interface ErrorFieldProps {
     message:string;
     classes?:string
 }
+
+export interface GlobalState {
+  user: User | null;
+  token: string | null;
+}
+
+export interface GlobalContextType {
+  state: GlobalState;
+  setState: (newState: Partial<GlobalState>) => void;
+  logout: () => void;
+}
+
+
+export interface User {
+     name: string |null; 
+     email: string | null;
+     isAdmin:boolean | null; 
+}
+
+export interface NavProps{
+       state:GlobalState
+}

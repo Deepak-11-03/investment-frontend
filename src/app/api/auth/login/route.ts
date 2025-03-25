@@ -17,12 +17,12 @@ export async function POST(req: Request) {
         return NextResponse.json({ success: false, message: "Invalid login credentials" }, { status: 404 });
     }
     
-    const token = generateToken(user?._id,email)
+    const token = generateToken(user?._id,email,user.isAdmin)
 
     
 
     const response = NextResponse.json(
-        { success: true, message: "Login Success", token }, 
+        { success: true, message: "Login Success", user:{name:user?.name, email:user.email,isAdmin:user.isAdmin,token} }, 
         { status: 200 }
     );
 

@@ -1,7 +1,9 @@
 import connectDB from "@/config/db";
 import User from "@/models/User";
 import generatePassword from "@/utils/generatePassword";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import jwt from 'jsonwebtoken'
 
 // const handler =async(req:NextRequest,res:any)=>{
 //     if(req.method === 'POST'){
@@ -27,6 +29,24 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: Request) {
     const { name, email, phone,investedAmount, investedDate  } = await req.json();
 
+        const token = (await cookies()).get("token")?.value;
+        if (!token) {
+          return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+        }
+    
+        // Verify token
+        const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+    
+        if (!decoded || !decoded.userId) {
+          return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 });
+        }
+        
+        const adminUser = await User.findOne({_id:decoded?.userId,isAdmin:true})
+        
+        if(!adminUser){
+            return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 });
+        }
+
     const userExist = await User.findOne({email:email,phone:phone});
     
     if(userExist){
@@ -40,27 +60,40 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, message: "User created" , data:user }, { status: 200 });
    
 }
-// export async function GET(req: NextRequest, { params }: { params: { id?: string } }) {
 
-//     try {
-//         const userId = params.id;
+export async function GET(req: NextRequest) {
 
-//         if (!userId) {
-//             return NextResponse.json({ success: false, message: "User ID is required" }, { status: 400 });
-//         }
+    try {
+
+      await connectDB();
+
+      console.log('first')
+       
+      // const token = (await cookies()).get("token")?.value;
+      // if (!token) {
+      //   return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+      // }
+  
+      // // Verify token
+      // const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+  
+      // if (!decoded || !decoded.userId) {
+      //   return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 });
+      // }
+
+      
+      // const adminUser = await User.findOne({_id:decoded?.userId,isAdmin:true})
+      
+      // if(!adminUser){
+      //     return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 });
+      // }
+        const users = await User.find({isAdmin:false});
     
-//         const user = await User.findById(userId);
-    
-//         if (!user) {
-//             return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
-//         }
-//         return NextResponse.json({ success: true, data: user }, { status: 200 });
-//     } catch (error) {
-//         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
-//     }
-
-
- 
-
-   
-// }
+        // if (!user) {
+        //     return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+        // }
+        return NextResponse.json({ success: true, data: users }, { status: 200 });
+    } catch (error) {
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }  
+}

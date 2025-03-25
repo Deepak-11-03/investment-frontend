@@ -9,7 +9,7 @@ import { ContactFormProps } from '@/types/type'
 
 const ContactUsForm = ({ handleSubmit }: ContactFormProps) => {
     return (
-        <Card className='md:w-[30rem] w-full mx-auto'>
+        <Card className='md:max-w-[25rem] w-full mx-auto'>
 
             <CardHeader>
                 <CardTitle className='text-2xl'> Send Us a Message</CardTitle>

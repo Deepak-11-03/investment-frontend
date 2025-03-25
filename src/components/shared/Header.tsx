@@ -1,28 +1,28 @@
 "use client";
 import Link from "next/link";
-import useLocation from "@/hooks/useLocation";
+
+// import useLocation from "@/hooks/useLocation";
 import Navbar from "./Navbar";
 import SideDrawer from "./SideDrawer";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import { useGlobalState } from "@/context/GlobalContext";
 import { userLogout } from "@/services/user.service";
+import { useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
 
 export default function Header() {
-
-    const { navigate } = useLocation();
+    const router = useRouter()
     const width = useWindowWidth()
-    const { state,setState } = useGlobalState()
+    const { data: session, status } = useSession();
 
-    const handleLogout=async()=>{
-        const res = await userLogout()
-        console.log(res,'logout res')
-        setState({token:null})
+    const handleLogout = async () => {
+        await signOut({redirect: false})
+        router.push('/')
     }
 
-
     return (
-        <header className="py-3 sm:px-6 px-1 shadow-md fixed top-0 left-0 w-full z-10 bg-white">
-            <div className="max-w-8xl mx-auto flex justify-between items-center">
+        <header className="bg-white shadow-md w-full fixed left-0 px-1 py-3 sm:px-6 top-0 z-10">
+            <div className="flex justify-between items-center max-w-8xl mx-auto">
                 {/* Logo  */}
                 <div className="flex gap-4 items-center">
                     {width && width < 768 ? <SideDrawer /> : ''}
@@ -32,21 +32,21 @@ export default function Header() {
                 </div>
 
                 {/* Navbar */}
-                <div className="flex items-center gap-6">
-                    <Navbar />
+                <div className="flex gap-6 items-center">
+                    <Navbar user={session?.user} />
 
                     {/* Login and logout button */}
-                    {state.token ?
+                    {status === "authenticated" ?
                         <button
                             onClick={handleLogout}
-                            className="text-white bg-black px-4 py-2 rounded-md hover:bg-gray-800 transition cursor-pointer"
+                            className="bg-black rounded-md text-white cursor-pointer hover:bg-gray-800 px-4 py-2 transition"
                         >
                             Logout
                         </button>
                         :
                         <button
-                            onClick={() => navigate('/auth/login')}
-                            className="text-white bg-black px-4 py-2 rounded-md hover:bg-gray-800 transition cursor-pointer"
+                            onClick={() => router.push('/auth/login')}
+                            className="bg-black rounded-md text-white cursor-pointer hover:bg-gray-800 px-4 py-2 transition"
                         >
                             Login
                         </button>

@@ -150,3 +150,19 @@ body {
 button{
   cursor: pointer;
 }
+
+
+@keyframes fall {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(50vh);
+    opacity: 1;
+  }
+}
+
+.animate-fall {
+  animation: fall 1.5s ease-out forwards;
+}

@@ -9,7 +9,6 @@ import { errorHandler } from "./error.service";
 export const createUser = async (data:any) => {
     try {
       const response = await postData('/user',data);
-      console.log(response,'ssssssss')
       return response;
     } catch (error) {
       errorHandler(error);
@@ -34,6 +33,7 @@ export const userLogout = async () => {
   };
 
   export const checkUser = async () => {
+    
     try {
       const response = await getData(`/auth/me`);
       return response;
@@ -41,3 +41,23 @@ export const userLogout = async () => {
       return error
     }
   };
+
+  export const getAllUsers = async () => {
+    
+    try {
+      const response = await getData(`/user`);
+      console.log(response.data)
+      return response.data;
+    } catch (error) {
+      return error
+    }
+  };
+
+  export const getToken = async()=>{
+    try {
+      const res= await getData("/auth/get-token")
+      return res;
+    } catch (error) {
+      return error
+    }
+  }

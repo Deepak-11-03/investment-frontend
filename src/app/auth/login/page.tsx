@@ -1,42 +1,43 @@
 'use client';
-import LoginForm from '@/components/forms/LoginForm'
-import { useGlobalState } from '@/context/GlobalContext';
-import useLocation from '@/hooks/useLocation';
-import { userLogin } from '@/services/user.service';
+import LoginForm from '@/components/forms/LoginForm';
 import { Login } from '@/types/type';
-import React from 'react'
-import { toast } from "sonner"
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { toast } from "sonner";
 
 
 const LoginPage = () => {
-  const {state,setState} = useGlobalState()
-  const {navigate} = useLocation()
 
-  const handleSubmit = async(val: Login) => {
-    // try {
-      const data :any = await userLogin(val)
+  const router = useRouter();
 
-      if(data.success){
-        setState({token:data.token})
-        toast.success(data.message)
 
-      }
-      else{
-        toast.error(data.message)
-      }
-      console.log(data)
-      // setState({user:{_id:'1',name:'John Doe',email:val.email}})
-      // setState({isAdmin:true})
-      // navigate('/')
-    // } catch (error) {
-    // }
+  useEffect(() => {
+    
+  },[])
+
+  const handleSubmit = async (val: Login) => {
+    const result = await signIn("credentials", {
+      email: val.email,
+      password: val.password,
+      redirect: false,
+    });
+
+    if (result?.ok === false) {
+      toast.error(result.error)
+
+    }
+    else {
+      toast.success('Login successful')
+      router.push('/')
+    }
   }
 
 
   return (
     <div className='h-screen pt-20'>
-      <LoginForm handleSubmit={handleSubmit}/>
-      </div>
+      <LoginForm handleSubmit={handleSubmit} />
+    </div>
   )
 }
 

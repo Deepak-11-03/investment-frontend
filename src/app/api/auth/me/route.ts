@@ -1,19 +1,18 @@
 import User from "@/models/User";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
-import connectDB from "@/config/db"; // Ensure DB is connected
+import connectDB from "@/config/db";
 
-export async function GET(req: NextRequest) {
+export async function GET(req: Request) {
   try {
-    await connectDB();
+      await connectDB()
 
-    // Get token from cookies
-    const token = (await cookies()).get("token")?.value;
-
-    if (!token) {
-      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-    }
+      const token = (await cookies()).get("token")?.value;
+      
+      if (!token) {
+          return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+        }
 
     // Verify token
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);

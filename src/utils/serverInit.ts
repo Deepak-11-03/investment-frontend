@@ -5,8 +5,8 @@ export async function initializeServer() {
   try {
     await connectDB();
     await createAdmin();
-    console.log("✅ Server Initialization Complete: Database Connected & Admin Created");
+    console.log(" Server Initialization Complete: Database Connected & Admin Created");
   } catch (error) {
-    console.error("❌ Server Initialization Failed:", error);
+    console.error(" Server Initialization Failed:", error);
   }
 }

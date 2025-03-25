@@ -2,13 +2,13 @@ import Image from "next/image";
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer";
 import { Button } from "../ui/button";
 import { navlinks } from "@/constants/constant";
-import { NavLink } from "@/types/type";
+import { NavLink, NavProps } from "@/types/type";
 import Link from "next/link";
 // import { FaBars, FaTimes } from "react-icons/fa";
 
 const SideDrawer = () => {
   return (
-    <Drawer direction="left">
+    <Drawer direction="left" >
       <DrawerTrigger asChild>
         <Button variant="outline">
           <Image src="/menu.svg" alt="menu" width={20} height={20} />
