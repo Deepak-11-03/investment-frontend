@@ -7,6 +7,7 @@ import {
     TableRow
   } from "@/components/ui/table";
   import ManageUserMenu from '@/components/ManageUserMenu';
+import calculateTotalAmount from '@/utils/calculateTotalAmount';
 // import { getAllUsers } from '@/services/user.service';
 
 
@@ -47,9 +48,9 @@ const UserList = async() => {
         {allUsers?.map((user:any) => (
       <TableRow key={user?._id} className="hover:bg-transparent">
         <TableCell className="font-medium">{user?.name}</TableCell>
-        <TableCell>0</TableCell>
+            <TableCell>${calculateTotalAmount(user,"credit")}</TableCell>
         <TableCell>{user?.createdAt}</TableCell>
-        <TableCell className="text-right">${user?.investments?.[0]?.investedAmount || 0}</TableCell>
+            <TableCell className="text-right">${calculateTotalAmount(user, "debit")}</TableCell>
         <TableCell className="text-right" >
           <ManageUserMenu />
         </TableCell>

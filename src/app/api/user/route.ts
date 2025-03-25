@@ -101,7 +101,6 @@ export async function GET(req: NextApiRequest) {
             }
         ]);
 
-        console.log(users);
 
 
         // if (!user) {
