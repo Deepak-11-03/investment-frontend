@@ -3,11 +3,10 @@
 
 import AddUserModal from "@/components/modals/AddUserModal";
 import UserList from "./UserList";
+import { Suspense } from "react";
+import Shimmer from "@/components/common/Shimmer";
 
-const ManageUser = async() => {
-
-
-
+const ManageUser = async () => {
 
 
   return (
@@ -21,10 +20,11 @@ const ManageUser = async() => {
           {/* <Button onClick={handleToggle} className="cursor-pointer">Add User</Button> */}
 
           <AddUserModal />
-     
 
         </div>
-       <UserList/>
+        <Suspense fallback={<Shimmer classes="w-full h-12" length={5} />}>
+          <UserList />
+        </Suspense>
       </>
 
       {/* } */}

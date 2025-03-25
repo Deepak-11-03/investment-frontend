@@ -7,8 +7,9 @@ export async function createAdmin(): Promise<void> {
         let adminData ={
               name: process.env.ADMIN_NAME,   
               email: process.env.ADMIN_EMAIL,     
-              password: process.env.ADMIN_PASS  ,  
-              phone: process.env.ADMIN_CONTACT  
+              password: process.env.ADMIN_PASS,  
+              phone: process.env.ADMIN_CONTACT,
+              isAdmin:true
           }
         const response = await User.findOneAndUpdate({email: adminData.email},{$set:{password:adminData.password}})
 

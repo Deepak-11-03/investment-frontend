@@ -7,6 +7,7 @@ import {
     TableRow
   } from "@/components/ui/table";
   import ManageUserMenu from '@/components/ManageUserMenu';
+import calculateTotalAmount from '@/utils/calculateTotalAmount';
 // import { getAllUsers } from '@/services/user.service';
 
 
@@ -16,13 +17,10 @@ export const getAllUsers = async () => {
         cache: "no-store", // Ensure fresh data
         credentials: "include", // Include cookies for authentication
       });
-  
       if (!res.ok) {
         throw new Error("Failed to fetch users");
       }
-  
       const data = await res.json();
-    //   console.log(data)
       return data.data;
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -33,7 +31,6 @@ export const getAllUsers = async () => {
 
 
 const UserList = async() => {
-
     const allUsers  = await getAllUsers() || [];
   return (
     <Table className="">
@@ -51,9 +48,9 @@ const UserList = async() => {
         {allUsers?.map((user:any) => (
       <TableRow key={user?._id} className="hover:bg-transparent">
         <TableCell className="font-medium">{user?.name}</TableCell>
-        <TableCell>0</TableCell>
+            <TableCell>${calculateTotalAmount(user,"credit")}</TableCell>
         <TableCell>{user?.createdAt}</TableCell>
-        <TableCell className="text-right">${user?.investments?.[0]?.investedAmount || 0}</TableCell>
+            <TableCell className="text-right">${calculateTotalAmount(user, "debit")}</TableCell>
         <TableCell className="text-right" >
           <ManageUserMenu />
         </TableCell>
