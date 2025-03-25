@@ -52,8 +52,8 @@ const UserList = async() => {
       <TableRow key={user?._id} className="hover:bg-transparent">
         <TableCell className="font-medium">{user?.name}</TableCell>
         <TableCell>0</TableCell>
-        <TableCell>0</TableCell>
-        <TableCell className="text-right">$250.00</TableCell>
+        <TableCell>{user?.createdAt}</TableCell>
+        <TableCell className="text-right">${user?.investments?.[0]?.investedAmount || 0}</TableCell>
         <TableCell className="text-right" >
           <ManageUserMenu />
         </TableCell>

@@ -18,6 +18,7 @@ const AddUserModal = () => {
     const onSubmit = async (data: any) => {
 
         handleApiRequest(createUser, data, (res: any) => {
+            handleToggle()
           console.log(res)
         })
       };
