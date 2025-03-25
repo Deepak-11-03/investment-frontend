@@ -17,7 +17,7 @@ const LoginForm = ({ handleSubmit }: LoginFormProps) => {
         initialValues={{ email: '', password: '' }}
         validationSchema={Yup.object({
           email: Yup.string().email('Invalid email address').trim().required('Email is required'),
-          password: Yup.string().required('Password is required').matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
+          password: Yup.string().required('Password is required').matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/, {
             message: "Password must be 8+ characters, with uppercase, lowercase, number, and special character."
           })
         })}

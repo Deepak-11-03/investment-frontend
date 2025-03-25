@@ -16,13 +16,10 @@ export const getAllUsers = async () => {
         cache: "no-store", // Ensure fresh data
         credentials: "include", // Include cookies for authentication
       });
-  
       if (!res.ok) {
         throw new Error("Failed to fetch users");
       }
-  
       const data = await res.json();
-    //   console.log(data)
       return data.data;
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -33,7 +30,6 @@ export const getAllUsers = async () => {
 
 
 const UserList = async() => {
-
     const allUsers  = await getAllUsers() || [];
   return (
     <Table className="">

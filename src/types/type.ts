@@ -22,6 +22,7 @@ export interface InputFieldProps {
     type: string;
     label: string;
     error?:string;
+    required?:boolean;
     [key: string]: string | number | boolean | ((event: any) => void) | undefined;
 }
 

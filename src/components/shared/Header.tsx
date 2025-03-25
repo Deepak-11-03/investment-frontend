@@ -14,7 +14,6 @@ export default function Header() {
     const router = useRouter()
     const width = useWindowWidth()
     const { data: session, status } = useSession();
-
     const handleLogout = async () => {
         await signOut({redirect: false})
         router.push('/')
