@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createUser } from "@/services/user.service";
+import { checkUser, createUser } from "@/services/user.service";
+import { signOut } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 export async function addUserAndRevalidate(data: any) {
   try {
@@ -13,3 +15,17 @@ export async function addUserAndRevalidate(data: any) {
     throw error;
   }
 }
+
+export async function getUserProfile() {
+  try {
+    const response = await checkUser(); // Call your user creation service
+    // revalidatePath("/"); // Revalidate the cache for UserList
+    return response?.data;
+  } catch (error) {
+    console.error("Error adding user:", error);
+    throw error;
+  }
+}
+
+
+ 

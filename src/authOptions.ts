@@ -45,11 +45,12 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+console.log(user,'user details')
         token._id = user._id;
         token.name = user.name;
         token.email = user.email;
         token.isAdmin= user.isAdmin;
-        token.token = user?.token; // Pass JWT token for API requests
+        token.token = user.token; // Pass JWT token for API requests
       }
       return token;
     },

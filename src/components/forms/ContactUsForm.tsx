@@ -32,8 +32,8 @@ const ContactUsForm = ({ handleSubmit }: ContactFormProps) => {
                             <InputField type='text' name='name' label='Full Name' error={errors.name} placeholder="Enter your name" />
                             <InputField type='email' name='email' label='Email Address' error={errors.email} placeholder="Enter your email" />
                             <InputField type='textarea' name='message' label='Message' error={errors.message} placeholder="Type message" />
-                            <Button type="submit" className=" cursor-pointer" >
-                                Login
+                            <Button type="submit" className=" cursor-pointer" disabled={Object.keys(errors).length > 0 || isSubmitting}>
+                                Send message
                             </Button>
                         </Form>
                     )}

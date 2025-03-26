@@ -143,10 +143,12 @@ export default withAuth(
 
 export const config = {
   matcher: [
-    "/profile",
+    "/account",
     "/manage-user",
     // "/api/user",
     "/auth/login",
+    "/api/auth/me",
+    "/api/user",
     "/signup",
   ],
 };
