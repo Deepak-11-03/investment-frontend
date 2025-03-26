@@ -1,3 +1,4 @@
+"use client"
 import { navlinks } from '@/constants/constant'
 import { useGlobalState } from '@/context/GlobalContext'
 import { NavLink, NavProps } from '@/types/type'
@@ -25,7 +26,13 @@ const Navbar = ({user}:any) => {
                             Manage user
                         </Link>
                     </li>
-                    : ''}
+                    : 
+                    <li className="border-b-2 border-transparent hover:border-black py-1 transition">
+                        <Link href={'/account'} className="px-2 py-2">
+                            My Account
+                        </Link>
+                    </li>
+                    }
             </ul>
         </nav>
     )

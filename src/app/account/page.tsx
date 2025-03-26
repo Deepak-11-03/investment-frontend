@@ -1,7 +1,11 @@
+import { getUserProfile } from "@/actions/userActions";
 import { checkUser } from "@/services/user.service";
 
+
+
 const MyProfile = async () => {
-  const data = await checkUser(); // Fetching data on the server
+  const data = await getUserProfile(); // Fetching data on the server
+console.log(data,'vvvvvvvvvvvv')
 
   return (
     <div>

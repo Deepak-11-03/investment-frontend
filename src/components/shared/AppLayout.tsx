@@ -1,6 +1,6 @@
 
 import { AppLayoutProps } from '@/types/type'
-import Header from './Header';
+import Header from './Header/Header';
 import Footer from './Footer';
 import { GlobalProvider } from '@/context/GlobalContext';
 import { LoadingProvider } from '@/context/LoadingContext';

@@ -38,7 +38,7 @@ export const userLogout = async () => {
       const response = await getData(`/auth/me`);
       return response;
     } catch (error) {
-      return error
+      errorHandler(error);
     }
   };
 
