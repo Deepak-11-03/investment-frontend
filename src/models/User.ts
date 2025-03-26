@@ -8,6 +8,7 @@ export interface IUser extends Document {
     phone: string;
     password: string;
     isAdmin?: boolean; 
+    isDeleted?: boolean; 
 }
 
 //  schema
@@ -32,6 +33,10 @@ const UserSchema = new Schema<IUser>(
             required: true,
         },
         isAdmin: {
+            type: Boolean,
+            default: false,
+        },
+        isDeleted: {
             type: Boolean,
             default: false,
         },

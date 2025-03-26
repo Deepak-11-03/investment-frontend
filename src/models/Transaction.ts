@@ -6,6 +6,7 @@ export interface ITransaction extends Document {
     amount: string;
     type: "credit" | "debit";
     date: Date;
+    // isDeleted: boolean;
 }
 
 // schema

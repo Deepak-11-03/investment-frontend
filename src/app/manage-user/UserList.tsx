@@ -49,9 +49,9 @@ const UserList = async() => {
         {allUsers?.map((user:any) => (
       <TableRow key={user?._id} className="hover:bg-transparent">
         <TableCell className="font-medium">{user?.name}</TableCell>
-            <TableCell className='text-right'>${calculateTotalAmount(user,"credit")}</TableCell>
+            <TableCell className='text-right'>${user?.totalCredit}</TableCell>
         <TableCell className='text-center'>{moment(user?.createdAt).format("MMM DD yyyy hh:mm A")}</TableCell>
-            <TableCell className="text-right">${calculateTotalAmount(user, "debit")}</TableCell>
+            <TableCell className="text-right">${user?.totalDebit}</TableCell>
         <TableCell className="text-right" >
           <ManageUserMenu />
         </TableCell>

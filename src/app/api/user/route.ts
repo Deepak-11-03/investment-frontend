@@ -1,19 +1,15 @@
 import connectDB from "@/config/db";
 import User from "@/models/User";
 import generatePassword from "@/utils/generatePassword";
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import jwt from 'jsonwebtoken'
-import Transaction from "@/models/Investment";
+import Transaction from "@/models/Transaction";
 
 import authOptions from "@/authOptions";
 import { getServerSession } from "next-auth/next";
-import { getToken } from "next-auth/jwt";
-import { NextApiRequest } from "next";
 import { userAddValidation } from "@/utils/validation";
 
 export async function POST(req: Request) {
-
+    await connectDB()
 
     const session = await getServerSession(authOptions);
 
@@ -64,9 +60,23 @@ export async function GET() {
         await connectDB();
 
        
+        // const users = await User.aggregate([
+        //     {
+        //         $match: { isAdmin: false, isDeleted:false } // Get only non-admin users 
+        //     },
+        //     {
+        //         $lookup: {
+        //             from: "transactions", // Match with the transactions collection
+        //             localField: "_id",
+        //             foreignField: "userId",
+        //             as: "transactions"
+        //         }
+        //     }
+        // ]);
+
         const users = await User.aggregate([
             {
-                $match: { isAdmin: false } // Get only non-admin users 
+                $match: { isAdmin: false } // Get only non-admin users
             },
             {
                 $lookup: {
@@ -75,8 +85,61 @@ export async function GET() {
                     foreignField: "userId",
                     as: "transactions"
                 }
+            },
+            {
+                $addFields: {
+                    totalCredit: {
+                        $sum: {
+                            $map: {
+                                input: "$transactions",
+                                as: "transaction",
+                                in: { 
+                                    $cond: [
+                                        { $eq: ["$$transaction.type", "credit"] }, 
+                                        { $toDouble: "$$transaction.amount" }, 
+                                        0 
+                                    ] 
+                                }
+                            }
+                        }
+                    },
+                    totalDebit: {
+                        $sum: {
+                            $map: {
+                                input: "$transactions",
+                                as: "transaction",
+                                in: { 
+                                    $cond: [
+                                        { $eq: ["$$transaction.type", "debit"] }, 
+                                        { $toDouble: "$$transaction.amount" }, 
+                                        0 
+                                    ] 
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    totalAmount: { $subtract: ["$totalCredit", "$totalDebit"] }
+                }
+            },
+            {
+                $project: {
+                    name: 1, // Keep only relevant fields
+                    email: 1,
+                    totalCredit: 1,
+                    totalDebit: 1,
+                    totalAmount: 1,
+                    createdAt:1
+                }
             }
         ]);
+        
+
+        console.log(users)
+        
 
 
 
@@ -88,3 +151,5 @@ export async function GET() {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
+
+
