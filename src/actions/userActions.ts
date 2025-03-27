@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { checkUser, createUser, getAllUsers } from "@/services/user.service";
+import { createUser } from "@/services/user.service";
+
+
 
 
 export async function addUserAndRevalidate(data: any) {
@@ -20,6 +22,7 @@ export const getAllUsersData = async () => {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
           cache: "no-store",
           credentials: "include",
+          //  next: { revalidate: 60 } 
       });
 
       if (!res.ok) {
@@ -38,11 +41,12 @@ export const getAllUsersData = async () => {
 export async function getUserProfile() {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-      method: "GET",
-      credentials: "include", // Include cookies if needed
-      headers: {
-        "Content-Type": "application/json",
-      },
+      cache: "no-store",
+      credentials: "include",
+      // next: { revalidate: 60 }  // Include cookies if needed
+      // headers: {
+      //   "Content-Type": "application/json",
+      // },
     });
 
     if (!response.ok) {
@@ -50,10 +54,9 @@ export async function getUserProfile() {
     }
 
     const data = await response.json();
-    return data.data;
+    return data?.data || {};
   } catch (error) {
-    console.error("Error fetching user profile:", error);
-    throw error;
+    return null;
   }
 }
 

@@ -1,13 +1,42 @@
-
+'use client';
 import InputField from "@/components/common/InputField";
 
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import { Button } from "../ui/button";
-import { LoginFormProps } from "@/types/type";
+import { Login, LoginFormProps } from "@/types/type";
 import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-const LoginForm = ({ handleSubmit ,isLoading}: LoginFormProps) => {
+const LoginForm = () => {
+const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false);
+
+const handleSubmit = async (val: Login) => {
+  const result = await signIn("credentials", {
+    email: val.email,
+    password: val.password,
+    redirect: false,
+  });
+
+  if (result?.ok === false) {
+    toast.error(result.error);
+  } else {
+    toast.success('Login successful');
+    router.push('/');
+  }
+};
+
+
+  const onSubmit = async (val: Login) => {
+    setIsLoading(true);
+    await handleSubmit(val);
+    setIsLoading(false);
+  };
+
   return (
     <div className="flex flex-1 flex-col justify-center items-center lg:px-8 px-6">
       <h2 className="text-2xl/9 text-center text-gray-900 font-bold mt-10 tracking-tight">
@@ -23,7 +52,7 @@ const LoginForm = ({ handleSubmit ,isLoading}: LoginFormProps) => {
           })
         })}
         onSubmit={async (values, { setSubmitting }) => {
-          handleSubmit(values)
+          await onSubmit(values)
         }}
       >
         {({ errors, touched, isSubmitting }) => (

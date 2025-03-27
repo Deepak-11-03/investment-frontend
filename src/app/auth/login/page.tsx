@@ -1,40 +1,23 @@
-'use client';
+// 'use client';
+import authOptions from '@/authOptions';
+import Loader from '@/components/common/Loader';
 import LoginForm from '@/components/forms/LoginForm';
-import { Login } from '@/types/type';
-import { signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { toast } from "sonner";
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
 
 
-const LoginPage = () => {
+const LoginPage = async () => {
+  const session = await getServerSession(authOptions);
 
-  const router = useRouter();
-  const [isLoading,setIsLoading] = useState(false)
-  const handleSubmit = async (val: Login) => {
-    setIsLoading(true)
-    const result = await signIn("credentials", {
-      email: val.email,
-      password: val.password,
-      redirect: false,
-    });
+  
 
-    if (result?.ok === false) {
-      setIsLoading(false)
-      toast.error(result.error)
-      
-    }
-    else {
-      toast.success('Login successful')
-      router.push('/')
-      setIsLoading(false)
-    }
+  if (session?.user) {
+    redirect('/');
   }
-
 
   return (
     <div className='h-screen pt-20'>
-      <LoginForm handleSubmit={handleSubmit} isLoading={isLoading} />
+      <LoginForm />
     </div>
   )
 }
