@@ -45,23 +45,22 @@ const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token._id = user._id;
-        token.name = user.name;
         token.email = user.email;
-        token.isAdmin = user.isAdmin;
-        token.token = user.token; // Pass JWT token for API requests
+        token.isAdmin = user.isAdmin; // Store user role
       }
       return token;
     },
     async session({ session, token }) {
-      if (session.user) {
-        session.user._id = token._id as string | undefined;
-        session.user.name = token.name;
-        session.user.email = token.email;
-        session.user.isAdmin = token.isAdmin as boolean | undefined;
-        session.user.token = token?.token ? (token?.token as string) : ""; // Ensure token is always a string
-      }
+console.log('session', session, token)
+      session.user = {
+        _id: token._id as string | undefined,
+        email: token.email,
+        isAdmin: token.isAdmin as boolean | undefined, // Ensure correct role is set
+        id: typeof token._id === "string" ? token._id : "", // Ensure id is a string with fallback to an empty string
+        token: typeof token.token === "string" ? token.token : "", // Ensure token is always a string with a fallback
+      };
       return session;
-    }
+    },
 
   },
   pages: {

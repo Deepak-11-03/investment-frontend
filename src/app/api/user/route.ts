@@ -7,6 +7,7 @@ import Transaction from "@/models/Transaction";
 import authOptions from "@/authOptions";
 import { getServerSession } from "next-auth/next";
 import { userAddValidation } from "@/utils/validation";
+import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
     await connectDB()
@@ -56,9 +57,11 @@ export async function POST(req: Request) {
 export async function GET() {
 
     try {
-
+console.log('first')
         await connectDB();
         // const 
+//    const cookie = (await cookies()).getAll()
+// console.log(cookie)
 
         const users = await User.aggregate([
             {

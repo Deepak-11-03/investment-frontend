@@ -8,7 +8,10 @@ export default function LogoutButton() {
 
     const logout = async () => {
             await signOut({ redirect: false })
-            router.push('/auth/login')
+        sessionStorage.clear(); // Clear session storage
+        localStorage.clear(); // Clear local storage (if storing any auth data)
+
+        router.replace("/auth/login"); 
         
     };
 

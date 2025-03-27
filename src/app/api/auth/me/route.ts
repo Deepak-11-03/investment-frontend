@@ -1,26 +1,27 @@
-import User from "@/models/User";
 import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
-import connectDB from "@/config/db";
 import { getServerSession } from "next-auth";
 import authOptions from "@/authOptions";
+import connectDB from "@/config/db";
+import User from "@/models/User";
+import { cookies } from "next/headers";
+
 
 export async function GET(req: Request) {
   try {
-      await connectDB()
+    const cookie = (await cookies()).getAll()
+    await connectDB();
 
-  const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions);
+    console.log("Cookies:", cookie); // Debugging cookies
 
-  console.log(session, 'session')
-    // if (session?.user.isAdmin === false) {
-    //     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-    // }
+    console.log("SESSION IN API:", session); // Debugging session
 
-    // console.log(session,'ssssssssssssssssssss')
+    if (!session || !session.user) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
 
-    // Fetch user from database
-    const user = await User.findOne().select("-password"); // Exclude password
+    // Fetch user based on session
+    const user = await User.findOne({ email: session.user.email }).select("-password"); // Exclude password
 
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });

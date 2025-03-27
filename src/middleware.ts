@@ -80,19 +80,16 @@
 
 
 
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { withAuth, NextRequestWithAuth } from "next-auth/middleware";
-import { redirect } from "next/navigation";
-import { getToken } from "next-auth/jwt";
 const SECRET_KEY = process.env.JWT_SECRET || "";
 
 
 export default withAuth(
   async function middleware(request: NextRequestWithAuth) {
     const path = request.nextUrl.pathname;
-    // const token = request.nextauth.token;
-    const token = await getToken({ req: request });
+    const token = request.nextauth.token;
+    // const token = await getToken({ req: request });
 
     const isPublicPath =
       path === "/auth/login" ||
@@ -107,8 +104,8 @@ export default withAuth(
     }
 
     if (path === "/auth/login" && token) {
-        return NextResponse.redirect(new URL("/", request.nextUrl)); // Redirect to home
-      }
+      return NextResponse.redirect(new URL("/", request.nextUrl)); // Redirect to home
+    }
 
     // restrict access to protected API routes
     // if (path.startsWith("/api/user") && !token) {
@@ -131,8 +128,13 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: async ({ req }) => {
-        const token = await getToken({ req });
+      authorized: async ({ req, token }: { req: NextRequest, token: any }) => {
+        console.log(token, 'token', req.nextUrl.pathname)
+        if (req.nextUrl.pathname === '/manage/user') {
+          return token.isAdmin;
+        }
+     
+        // const token = await getToken({ req });
         return !!token; // Ensure token exists
       },
     },
@@ -147,7 +149,7 @@ export const config = {
   matcher: [
     "/account",
     "/manage-user",
-    // "/api/user",
+    "/api/user",
     "/auth/login",
     "/api/auth/me",
     // "/api/user",
