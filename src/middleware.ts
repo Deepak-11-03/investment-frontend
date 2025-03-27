@@ -82,6 +82,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { withAuth, NextRequestWithAuth } from "next-auth/middleware";
+import { cookies } from "next/headers";
 const SECRET_KEY = process.env.JWT_SECRET || "";
 
 
@@ -128,8 +129,11 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: async ({ req, token }: { req: NextRequest, token: any }) => {
-        console.log(token, 'token', req.nextUrl.pathname)
+      authorized: async ({ req, token }: { req: NextRequest, token: any}) => {
+        // console.log(token, 'token')
+        // if(token.token){
+          (await cookies()).set("session", 'dsdsd');
+        // }
         if (req.nextUrl.pathname === '/manage/user') {
           return token.isAdmin;
         }
@@ -149,10 +153,8 @@ export const config = {
   matcher: [
     "/account",
     "/manage-user",
-    "/api/user",
     "/auth/login",
-    "/api/auth/me",
-    // "/api/user",
+    // "/api/auth/me",
     "/signup",
   ],
 };

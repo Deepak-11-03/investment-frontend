@@ -26,9 +26,10 @@ const authOptions: NextAuthOptions = {
           throw new Error(data.message);
         }
 
+        console.log(data,'login response')
         // Return the user object containing necessary details
         return {
-          id: data.user.id,
+          id: data.user._id,
           name: data.user.name,
           email: data.user.email,
           token: data.user.token,
@@ -44,19 +45,19 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token._id = user._id;
+        token.id = user.id;
         token.email = user.email;
         token.isAdmin = user.isAdmin; // Store user role
+        token.token = user.token; // Store user role
       }
       return token;
     },
     async session({ session, token }) {
-console.log('session', session, token)
+// console.log('session', session, token)
       session.user = {
-        _id: token._id as string | undefined,
+        id: token.id as string ,
         email: token.email,
         isAdmin: token.isAdmin as boolean | undefined, // Ensure correct role is set
-        id: typeof token._id === "string" ? token._id : "", // Ensure id is a string with fallback to an empty string
         token: typeof token.token === "string" ? token.token : "", // Ensure token is always a string with a fallback
       };
       return session;
