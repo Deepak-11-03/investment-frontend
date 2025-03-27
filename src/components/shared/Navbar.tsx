@@ -8,8 +8,6 @@ import React from 'react'
 
 
 const Navbar = ({user}:any) => {
-
-    const {state} = useGlobalState()
     return (
         <nav className='hidden md:block'>
             <ul className="flex space-x-4">
@@ -20,7 +18,7 @@ const Navbar = ({user}:any) => {
                         </Link>
                     </li>
                 )}
-                 { user?.isAdmin ? 
+                 { user ? user?.isAdmin ? 
                  <li className="border-b-2 border-transparent hover:border-black py-1 transition">
                         <Link href={'/manage-user'} className="px-2 py-2">
                             Manage user
@@ -32,7 +30,7 @@ const Navbar = ({user}:any) => {
                             My Account
                         </Link>
                     </li>
-                    }
+                    :''}
             </ul>
         </nav>
     )

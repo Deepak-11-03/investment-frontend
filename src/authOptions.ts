@@ -17,7 +17,7 @@ const authOptions: NextAuthOptions = {
           method: "POST",
           body: JSON.stringify({ email, password }),
           headers: { "Content-Type": "application/json" },
-          credentials: "include", 
+          credentials: "include",
         });
 
         const data = await response.json();
@@ -31,7 +31,7 @@ const authOptions: NextAuthOptions = {
           id: data.user.id,
           name: data.user.name,
           email: data.user.email,
-          token: data.token,
+          token: data.user.token,
           isAdmin: data.user.isAdmin, // Including JWT token if needed for API calls
         };
       },
@@ -39,17 +39,15 @@ const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60 * 24 * 7, // 7 days session
-    updateAge: 60 * 60, // Update session age every 1 hour
+
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-console.log(user,'user details')
         token._id = user._id;
         token.name = user.name;
         token.email = user.email;
-        token.isAdmin= user.isAdmin;
+        token.isAdmin = user.isAdmin;
         token.token = user.token; // Pass JWT token for API requests
       }
       return token;
@@ -59,17 +57,17 @@ console.log(user,'user details')
         session.user._id = token._id as string | undefined;
         session.user.name = token.name;
         session.user.email = token.email;
-        session.user.isAdmin= token.isAdmin as boolean | undefined;
-        session.user.token = (token.token as string) || "";
-        // session.user.token = token.token as string;
+        session.user.isAdmin = token.isAdmin as boolean | undefined;
+        session.user.token = token?.token ? (token?.token as string) : ""; // Ensure token is always a string
       }
       return session;
-    },
+    }
+
   },
   pages: {
     signIn: "/auth/login",
   },
-  secret:process.env.JWT_SECRET
+  secret: process.env.JWT_SECRET
 };
 
 export default authOptions;

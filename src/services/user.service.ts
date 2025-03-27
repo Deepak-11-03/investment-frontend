@@ -46,7 +46,7 @@ export const userLogout = async () => {
     
     try {
       const response = await getData(`/user`);
-      console.log(response.data)
+      console.log(response)
       return response.data;
     } catch (error) {
       return error

@@ -84,14 +84,15 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { withAuth, NextRequestWithAuth } from "next-auth/middleware";
 import { redirect } from "next/navigation";
+import { getToken } from "next-auth/jwt";
 const SECRET_KEY = process.env.JWT_SECRET || "";
 
 
 export default withAuth(
   async function middleware(request: NextRequestWithAuth) {
     const path = request.nextUrl.pathname;
-    const token = request.nextauth.token;
-
+    // const token = request.nextauth.token;
+    const token = await getToken({ req: request });
 
     const isPublicPath =
       path === "/auth/login" ||
@@ -130,9 +131,10 @@ export default withAuth(
   },
   {
     callbacks: {
-        authorized: ({ token }) => {
-            return !!token; // Ensure token exists before allowing access
-          },
+      authorized: async ({ req }) => {
+        const token = await getToken({ req });
+        return !!token; // Ensure token exists
+      },
     },
     secret: SECRET_KEY,
     pages: {
@@ -148,7 +150,7 @@ export const config = {
     // "/api/user",
     "/auth/login",
     "/api/auth/me",
-    "/api/user",
+    // "/api/user",
     "/signup",
   ],
 };

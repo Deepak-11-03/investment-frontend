@@ -58,21 +58,7 @@ export async function GET() {
     try {
 
         await connectDB();
-
-       
-        // const users = await User.aggregate([
-        //     {
-        //         $match: { isAdmin: false, isDeleted:false } // Get only non-admin users 
-        //     },
-        //     {
-        //         $lookup: {
-        //             from: "transactions", // Match with the transactions collection
-        //             localField: "_id",
-        //             foreignField: "userId",
-        //             as: "transactions"
-        //         }
-        //     }
-        // ]);
+        // const 
 
         const users = await User.aggregate([
             {
@@ -136,13 +122,7 @@ export async function GET() {
                 }
             }
         ]);
-        
-
-        console.log(users)
-        
-
-
-
+               
         // if (!user) {
         //     return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
         // }

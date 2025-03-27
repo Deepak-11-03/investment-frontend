@@ -1,38 +1,50 @@
-import React from 'react'
 import {
-    Table,
-    TableBody, TableCell,
-    TableHead,
-    TableHeader,
-    TableRow
-  } from "@/components/ui/table";
-  import ManageUserMenu from '@/components/ManageUserMenu';
-import calculateTotalAmount from '@/utils/calculateTotalAmount';
+  Table,
+  TableBody, TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table";
+import ManageUserMenu from '@/components/ManageUserMenu';
 import moment from 'moment';
+import { getAllUsersData } from '@/actions/userActions';
 // import { getAllUsers } from '@/services/user.service';
 
 
-export const getAllUsers = async () => {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
-        cache: "no-store", // Ensure fresh data
-        credentials: "include", // Include cookies for authentication
-      });
-      if (!res.ok) {
-        throw new Error("Failed to fetch users");
-      }
-      const data = await res.json();
-      return data.data;
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      return [];
-    }
-  };
-  
+// export const getAllUsers = async () => {
+//     try {
+//         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
+//             cache: "no-store", // Ensure fresh data
+//             credentials: "include", // Include cookies for authentication
+//         });
+
+//         if (!res.ok) {
+//             const errorText = await res.text(); // Read response body for debugging
+//             console.error("Error response:", errorText);
+//             throw new Error(`Failed to fetch users: ${res.statusText}`);
+//         }
+
+//         const contentType = res.headers.get("Content-Type");
+//         if (!contentType || !contentType.includes("application/json")) {
+//             throw new Error("Invalid response format: Expected JSON");
+//         }
+
+//         const data = await res.json();
+//         return data.data;
+//     } catch (error) {
+//         console.error("Error fetching users:", error);
+//         return [];
+//     }
+// };
 
 
 const UserList = async() => {
-    const allUsers  = await getAllUsers() || [];
+    const allUsers  = await getAllUsersData() || [];
+
+    if (!Array.isArray(allUsers)) {
+      console.error("Expected an array but got:", allUsers);
+      return <p className="text-red-500">Failed to load users</p>;
+  }
   return (
     <Table className="">
     {/* <TableCaption>A list of your recent .</TableCaption> */}

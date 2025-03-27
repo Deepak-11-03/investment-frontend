@@ -10,26 +10,14 @@ export async function GET(req: Request) {
   try {
       await connectDB()
 
-    //   const token = (await cookies()).get("token")?.value;
-      
-    //   if (!token) {
-    //       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-    //     }
-
-    // // Verify token
-    // const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
-
-    // if (!decoded || !decoded.userId) {
-    //   return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 });
-    // }
-
   const session = await getServerSession(authOptions);
 
-    if (session?.user.isAdmin === false) {
-        return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-    }
+  console.log(session, 'session')
+    // if (session?.user.isAdmin === false) {
+    //     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    // }
 
-    console.log(session,'ssssssssssssssssssss')
+    // console.log(session,'ssssssssssssssssssss')
 
     // Fetch user from database
     const user = await User.findOne().select("-password"); // Exclude password

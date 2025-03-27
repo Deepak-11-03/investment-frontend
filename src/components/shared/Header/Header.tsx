@@ -10,7 +10,7 @@ import { useSession } from "next-auth/react";
 export default function Header() {
     // const width = useWindowWidth()
     const { data: session, status } = useSession(); // ✅ Track session changes
-    
+
 
 
     return (
@@ -26,7 +26,7 @@ export default function Header() {
 
                 {/* Navbar */}
                 <div className="flex gap-6 items-center">
-                    <Navbar user={session} />
+                    <Navbar user={session?.user} />
 
                     {/* Login and logout button */}
                     {session?.user ?
@@ -36,9 +36,9 @@ export default function Header() {
                         // >
                         //     Logout
                         // </button>
-<LogoutButton/>
+                        <LogoutButton />
                         :
-                       <LoginButton/>
+                        <LoginButton />
                     }
 
 
