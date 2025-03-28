@@ -37,36 +37,6 @@ const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  session: {
-    strategy: "jwt",
-
-  },
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token._id = user._id;
-        token.email = user.email;
-        token.isAdmin = user.isAdmin; // Store user role
-      }
-      return token;
-    },
-    async session({ session, token }) {
-console.log('session', session, token)
-      session.user = {
-        _id: token._id as string | undefined,
-        email: token.email,
-        isAdmin: token.isAdmin as boolean | undefined, // Ensure correct role is set
-        id: typeof token._id === "string" ? token._id : "", // Ensure id is a string with fallback to an empty string
-        token: typeof token.token === "string" ? token.token : "", // Ensure token is always a string with a fallback
-      };
-      return session;
-    },
-
-  },
-  pages: {
-    signIn: "/auth/login",
-  },
-  secret: process.env.JWT_SECRET
 };
 
 export default authOptions;
