@@ -10,20 +10,19 @@ import { addUserAndRevalidate } from '@/actions/userActions';
 const AddUserModal = () => {
 
     const [open, setOpen] = useState(false)
+    const [user, setUser] = useState<User | null>(null)
+    const handleToggle = () => {
+        setOpen(!open)
+    }
     interface User {
         email: string;
         password: string
         // Add other properties as needed
     }
 
-    const [user, setUser] = useState<User | null>(null)
-    const handleToggle = () => {
-        setOpen(!open)
-    }
 
     const onSubmit = async (data: any) => {
-
-        const res = await addUserAndRevalidate(data); // Call server actions
+       const res = await addUserAndRevalidate(data); // Call server actions
         if (res) {
             setUser(res)
         }

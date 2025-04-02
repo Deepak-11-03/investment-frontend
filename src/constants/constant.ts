@@ -24,3 +24,15 @@ export const WHY_CHOOST_US = [
         description:"Vestibulum viverra vierra placerat praesent quis accumsan nuncac fermentum liberoliquam."
     },
 ]
+
+
+export const TRANSACTION:any = [
+        {
+        label: "Credit",
+        value: "credit",
+        },
+        {
+        label: "Debit",
+        value: "debit",
+        }
+    ]

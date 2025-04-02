@@ -72,6 +72,7 @@ export interface NavProps{
 }
 
 export interface UserDetailTypes {
+    _id:string;
     name: string;
     email: string;
     phone: string;

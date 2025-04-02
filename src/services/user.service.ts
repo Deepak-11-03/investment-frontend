@@ -31,6 +31,14 @@ export const userLogout = async () => {
       return error
     }
   };
+export const addTransaction = async (data:any) => {
+    try {
+      const response = await postData('/transaction', data)
+      return response;
+    } catch (error) {
+      return error
+    }
+  };
 
   export const checkUser = async () => {
     

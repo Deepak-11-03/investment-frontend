@@ -1,48 +1,36 @@
+import { useGlobalState } from '@/context/GlobalContext';
 import { UserDetailTypes } from '@/types/type';
 import React from 'react'
+import { Button } from './ui/button';
+import Transaction from './Transaction';
+import TransactionModal from './modals/TransactionModal';
 
 
 interface Props{
     user?: UserDetailTypes
+    handleUpdate?:(data:any)=>void 
 }
-const UserDetail = ({user}:Props) => {
+const UserDetail = ({ user, handleUpdate }:Props) => {
 
     if(!user){
         return <p>no details</p>
     }
 
   return (
-      <div>
-          <div>
-              <h2>Personal Information</h2>
+      <div className='flex flex-row justify-between'>
+          <div className='w-1/2'>
               <p><strong>Name:</strong> {user?.name}</p>
               <p><strong>Email:</strong> {user?.email}</p>
               <p><strong>Phone:</strong> {user?.phone}</p>
           </div>
-          <div>
-              <h2>Investment Details</h2>
-              {user?.transactions && user?.transactions.length > 0 ? (
-                  <table>
-                      <thead>
-                          <tr>
-                              <th>Amount</th>
-                              <th>Date</th>
-                              <th>Type</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          {user?.transactions.map((investment: any, index: number) => (
-                              <tr key={index}>
-                                  <td>{investment.amount}</td>
-                                  <td>{new Date(investment.date).toLocaleDateString()}</td>
-                                  <td>{investment.type}</td>
-                              </tr>
-                          ))}
-                      </tbody>
-                  </table>
-              ) : (
-                  <p>No investments found.</p>
-              )}
+          <div className='w-1/2'>
+              <div className='flex flex-row justify-between items-center'>
+                  <h2 className='text-2xl'>Investment Details</h2>
+                    
+                  <TransactionModal handleUpdate={handleUpdate}/>
+
+                </div>
+              <Transaction transactions={user.transactions}/>
           </div>
       </div>
   )
