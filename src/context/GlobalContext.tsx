@@ -23,26 +23,20 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   // 🔹 Validate user on refresh
   useEffect(() => {
     const fetchUser = async () => {
-      const token = Cookies.get("token");
-
-      if (!token) {
-        setState({ user: null, token: null });
-        setLoading(false);
-        return;
-      }
+  
 
       try {
         const user = await getUserProfile(); // Fetch user profile
         if (user) {
-          setState({ user: user, token });
+          setState({ user: user });
         } else {
-          Cookies.remove("token"); // Remove invalid token
+          // Cookies.remove("token"); // Remove invalid token
           setState({ user: null, token: null });
         }
       } catch (error) {
         console.error("User validation failed", error);
         setState({ user: null, token: null });
-        Cookies.remove("token");
+        // Cookies.remove("token");
       } finally {
         setLoading(false);
       }
