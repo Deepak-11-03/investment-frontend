@@ -1,24 +1,35 @@
-import connectDB from "@/config/db";
-import { verifyToken } from "@/middleware/verifyToken";
-import User from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
+import connectDB from "@/config/db";
+import User from "@/models/User";
+import { verifyToken } from "@/middleware/verifyToken";
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest) {
     try {
         await connectDB();
 
-        const authResponse: any = await verifyToken(req);
+        const urlParts = req.nextUrl.pathname.split("/");
+        const id = urlParts[urlParts.length - 1];
 
-        if (!authResponse.success) return authResponse;
-
-        if (!authResponse?.decoded?.isAdmin) {
-            return NextResponse.json({ success: false, message: "Unauthorized, You don't have permission" }, { status: 401 });
+        if (!id) {
+            return NextResponse.json({ success: false, message: "User ID is required" }, { status: 400 });
         }
 
-        await User.findByIdAndUpdate(params.id, { $set: { isDeleted :true }},{new:true}) 
+        const authResponse: any = await verifyToken(req);
+        if (!authResponse.success) return authResponse;
 
-        return NextResponse.json({ success: true, data: {} }, { status: 200 });
+        if (!authResponse.decoded?.isAdmin) {
+            return NextResponse.json({ success: false, message: "Unauthorized: Admin access required" }, { status: 403 });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(id, { $set: { isDeleted: true } }, { new: true });
+
+        if (!updatedUser) {
+            return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+        }
+
+        return NextResponse.json({ success: true, message: "User soft deleted successfully", data: updatedUser }, { status: 200 });
     } catch (error) {
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        console.error("Error deleting user:", error);
+        return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
     }
 }
