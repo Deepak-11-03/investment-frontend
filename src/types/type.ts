@@ -71,10 +71,21 @@ export interface NavProps{
        state:GlobalState
 }
 
+export interface TransactionTypes{
+    _id: string;
+    userId: string;
+    amount: string;
+    type: "credit" | "debit";
+    date: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+}
+
 export interface UserDetailTypes {
     _id:string;
     name: string;
     email: string;
     phone: string;
-    transactions: any[]
+    transactions: TransactionTypes[]
 }
