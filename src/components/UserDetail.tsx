@@ -1,9 +1,6 @@
-import { useGlobalState } from '@/context/GlobalContext';
 import { UserDetailTypes } from '@/types/type';
-import React from 'react'
-import { Button } from './ui/button';
-import Transaction from './Transaction';
 import TransactionModal from './modals/TransactionModal';
+import TransactionList from './TransactionList';
 
 
 interface Props{
@@ -30,7 +27,7 @@ const UserDetail = ({ user, handleUpdate }:Props) => {
                   <TransactionModal handleUpdate={handleUpdate}/>
 
                 </div>
-              <Transaction transactions={user.transactions}/>
+              <TransactionList transactions={user.transactions}/>
           </div>
       </div>
   )

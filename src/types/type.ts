@@ -71,7 +71,7 @@ export interface NavProps{
        state:GlobalState
 }
 
-export interface TransactionTypes{
+export interface Transaction{
     _id: string;
     userId: string;
     amount: string;
@@ -87,5 +87,5 @@ export interface UserDetailTypes {
     name: string;
     email: string;
     phone: string;
-    transactions: TransactionTypes[]
+    transactions: Transaction[]
 }

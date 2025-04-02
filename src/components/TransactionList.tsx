@@ -1,26 +1,17 @@
-import React from 'react'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card'
-import { TransactionTypes } from '@/types/type'
+import { Card, CardDescription, CardHeader, CardTitle } from './ui/card'
+import { Transaction } from '@/types/type'
 import { getAmountType, getTitleCase } from '@/utils'
 import moment from 'moment'
 
 interface Props {
-    transactions: [TransactionTypes]
+    transactions: Transaction[]
 }
 
-const Transaction = ({ transactions }: Props) => {
-    // {transactions.map((investment: any, index: number) => (
-    //     <tr key={index}>
-    //         <td>{investment.amount}</td>
-    //         <td>{new Date(investment.date).toLocaleDateString()}</td>
-    //         <td>{investment.type}</td>
-    //     </tr>
-    // ))}
+const TransactionList = ({ transactions }: Props) => {
     return (
-        <div className='max-h-[60vh] overflow-y-auto py-8'>
+        <div className='max-h-[60vh] overflow-y-auto  mt-10'>
             {transactions && transactions.length > 0 ? (
-                transactions.map((item: TransactionTypes) =>
-
+                transactions.map((item: Transaction) =>
                     <Card key={item?._id}>
                         <CardHeader>
                             <CardTitle className={`${item.type === 'credit' ? 'text-green-500' : 'text-red-500'}  flex flex-row justify-between`}>
@@ -42,4 +33,4 @@ const Transaction = ({ transactions }: Props) => {
     )
 }
 
-export default Transaction
+export default TransactionList

@@ -3,12 +3,11 @@ import Shimmer from '@/components/common/Shimmer';
 import ToolTip from '@/components/common/ToolTip';
 import { Button } from '@/components/ui/button';
 import UserDetail from '@/components/UserDetail';
-import apiClient from '@/services/http.service';
-import { addTransaction, getUserById } from '@/services/user.service'
+import { addTransaction, getUserById } from '@/services/user.service';
 import { UserDetailTypes } from '@/types/type';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
-import React, { Suspense, useActionState, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 
