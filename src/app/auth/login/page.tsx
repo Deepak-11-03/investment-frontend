@@ -1,5 +1,3 @@
-// 'use client';
-import authOptions from '@/authOptions';
 import Loader from '@/components/common/Loader';
 import LoginForm from '@/components/forms/LoginForm';
 // import { getServerSession } from 'next-auth';

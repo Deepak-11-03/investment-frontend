@@ -57,7 +57,7 @@ export interface GlobalState {
 export interface GlobalContextType {
   state: GlobalState;
   setState: (newState: Partial<GlobalState>) => void;
-  logout: () => void;
+//   logout: () => void;
 }
 
 

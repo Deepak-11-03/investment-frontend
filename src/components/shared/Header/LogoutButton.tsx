@@ -1,17 +1,22 @@
 "use client";
 
-import { signOut } from "next-auth/react";
+import { useGlobalState } from "@/context/GlobalContext";
+import { userLogout } from "@/services/user.service";
 import { useRouter } from "next/navigation";
 
 export default function LogoutButton() {
     const router = useRouter();
+const {setState}= useGlobalState()
 
     const logout = async () => {
-            await signOut({ redirect: false })
-        sessionStorage.clear(); // Clear session storage
-        localStorage.clear(); // Clear local storage (if storing any auth data)
-
-        router.replace("/auth/login"); 
+        const result: any = await userLogout()
+        if (result.success) {
+            setState({ user:null  })
+            router.replace('/');
+            sessionStorage.clear(); // Clear session storage
+            localStorage.clear(); // Clear local storage (if storing any auth data)
+        }
+        
         
     };
 

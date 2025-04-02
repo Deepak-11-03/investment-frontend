@@ -7,7 +7,7 @@ const AccountDetails = async () => {
     if (!data) {
         return <div>No account details found.</div>;
     }
-console.log(data)
+
     const { name, email, phone, investments } = data;
 
     return (

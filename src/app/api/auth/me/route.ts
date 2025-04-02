@@ -1,27 +1,21 @@
-import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import authOptions from "@/authOptions";
-import connectDB from "@/config/db";
 import User from "@/models/User";
-import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
+import connectDB from "@/config/db";
+import { verifyToken } from "@/middleware/verifyToken";
 
-
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
-    const cookie = (await cookies()).getAll()
-    await connectDB();
+    await connectDB(); // Ensure DB is connected
 
-    const session = await getServerSession(authOptions);
-    console.log("Cookies:", cookie); // Debugging cookies
+    // 🔹 Get token from cookies in the request
+    // 🔹 Verify token using middleware
+    const authResponse:any = await verifyToken(req);
 
-    console.log("SESSION IN API:", session); // Debugging session
+    if (!authResponse.success) return authResponse;
 
-    if (!session || !session.user) {
-      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-    }
-
-    // Fetch user based on session
-    const user = await User.findOne({ email: session.user.email }).select("-password"); // Exclude password
+    // 🔹 Fetch user from database (excluding password)
+    const user = await User.findById(authResponse.decoded.userId).select("-password");
 
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
@@ -29,7 +23,6 @@ export async function GET(req: Request) {
 
     return NextResponse.json({ success: true, data: user }, { status: 200 });
   } catch (error) {
-    console.error("Error fetching user:", error);
     return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
   }
 }

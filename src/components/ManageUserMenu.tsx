@@ -1,14 +1,14 @@
+
 import React from 'react'
-
 import Image from 'next/image'
+import DeleteConfirmModal from './modals/DeleteConfirmModal'
 
+const ManageUserMenu = ({user}:any) => {
 
-const ManageUserMenu = () => {
   return (
-
-    <div className='flex flex-row justify-end gap-4'>
+    <div className='flex flex-row justify-end gap-2'>
       <Image src={'/edit.svg'} height={26} width={26} alt="edit" className='cursor-pointer hover:bg-gray-100 rounded-md p-1' />
-      <Image src={'/trash.svg'} height={26} width={26} alt="edit" className='cursor-pointer hover:bg-gray-100 rounded-md p-1' />
+      <DeleteConfirmModal user={user} />
 
     </div>
 

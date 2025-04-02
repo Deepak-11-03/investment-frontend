@@ -4,6 +4,8 @@ import { NextResponse } from "next/server";
 export async function POST() {
     
 
+    return NextResponse.json({ success: false, message: "Can't access this api" }, { status: 400 });
+
     const userExist = await User.findOne({email:process.env.ADMIN_EMAIL});
     
     if(userExist){

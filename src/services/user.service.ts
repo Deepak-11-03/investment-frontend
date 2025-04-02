@@ -19,8 +19,8 @@ export const userLogin = async (data:Login) => {
     try {
       const response = await postData('/auth/login',data);
       return response;
-    } catch (error) {
-      return error
+    } catch (error:any) {
+      return error.message
     }
   };
 export const userLogout = async () => {

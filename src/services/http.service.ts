@@ -14,7 +14,7 @@ apiClient.interceptors.response.use(
     const status = error.response?.status;
     const message = error.response?.data || error.message;
 
-    console.error("API Error:", status, message);
+    // console.error("API Error:", status, message);
 
     if (typeof window !== "undefined") {
       // ✅ Client-side error handling
@@ -23,7 +23,11 @@ apiClient.interceptors.response.use(
         // localStorage.removeItem("token");
         // window.location.href = "/auth/login";
       } else {
-        toast.error(typeof message === "string" ? message : JSON.stringify(message) || "An error occurred");
+        toast.error(
+          typeof message === "string"
+            ? message
+            : ((message as { message?: string })?.message || "An error occurred")
+        );
       }
     }
 
@@ -36,6 +40,7 @@ interface ApiResponse<T = any> {
   data?: T;
   status: number;
   message?: string;
+  success?: boolean;
 }
 
 // ✅ Generic API Helper Functions
@@ -56,8 +61,8 @@ export const postData = async <T = any>(
   data: any
 ): Promise<ApiResponse<T>> => {
   try {
-    const response = await apiClient.post(endpoint, data);
-    return { data: response.data, status: response.status };
+    const response:ApiResponse = await apiClient.post(endpoint, data);
+    return { data: response.data, status: response.status, success:response.success , message:response?.message };
   } catch (error: any) {
     return Promise.reject(error);
   }
