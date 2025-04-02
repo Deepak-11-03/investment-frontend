@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
     const { name, email, phone, amount, date } = parsedData.data;
 
-    const userExist = await User.findOne({ email: email, phone: phone });
+    const userExist = await User.findOne({ email: email, phone: phone, isDeleted: false });
 
     if (userExist) {
         return NextResponse.json({ success: false, message: "User with this email or phone number is already exist" }, { status: 400 });

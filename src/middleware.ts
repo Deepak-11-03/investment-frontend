@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
     const token = request.cookies.get("token")?.value || "";
     const publicRoutes = ["/auth/login"];
 
-    console.log("🔹 Middleware triggered on:", path);
+    console.log("Middleware triggered on:", path);
 
     let verifiedToken: any = null;
 

@@ -52,6 +52,15 @@ export const userLogout = async () => {
       return error
     }
   };
+  export const getUserById = async (id:string) => {
+    
+    try {
+      const response = await getData(`/user/${id}`);
+      return response.data;
+    } catch (error) {
+      return error
+    }
+  };
 
   export const getToken = async()=>{
     try {
