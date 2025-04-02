@@ -70,3 +70,10 @@ export interface User {
 export interface NavProps{
        state:GlobalState
 }
+
+export interface UserDetailTypes {
+    name: string;
+    email: string;
+    phone: string;
+    transactions: any[]
+}

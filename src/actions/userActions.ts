@@ -8,9 +8,10 @@ import httpRequest from "@/services/fetch.service";
 
 export async function addUserAndRevalidate(data: any) {
   try {
-    const response = httpRequest("/user",'POST',data);
+    const response = await httpRequest("/user",'POST',data);
+    const userData = response?._doc || response;
     revalidatePath("/manage-user"); // Revalidate the cache for UserList
-    return response;
+    return userData;
   } catch (error) {
     console.error("Error adding user:", error);
     throw error;

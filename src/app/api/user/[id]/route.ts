@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/config/db";
 import User from "@/models/User";
 import { verifyToken } from "@/middleware/verifyToken";
+import mongoose from "mongoose";
 
 
 
@@ -14,6 +15,7 @@ export async function GET(req: NextRequest) {
 
         const urlParts = req.nextUrl.pathname.split("/");
         const id = urlParts[urlParts.length - 1];
+
 
         if (!id) {
             return NextResponse.json({ success: false, message: "User ID is required" }, { status: 400 });
@@ -29,7 +31,7 @@ export async function GET(req: NextRequest) {
 
         const users = await User.aggregate([
             {
-                $match: { isAdmin: false,isDeleted:false , _id:id } // Get only non-admin users
+                $match: { isAdmin: false, isDeleted: false, _id: new mongoose.Types.ObjectId(id) } // Get only non-admin users
             },
             {
                 $lookup: {
@@ -88,13 +90,13 @@ export async function GET(req: NextRequest) {
                     transactions:1,
                     createdAt: 1
                 }
-            }
+            },
         ]);
 
-        if (!users.length) {
-            return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
-        }
-        return NextResponse.json({ success: true, data: users[0] }, { status: 200 });
+        // if (!users.length) {
+        //     return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+        // }
+        return NextResponse.json({ success: true, data: users[0]}, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
