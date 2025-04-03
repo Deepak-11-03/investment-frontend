@@ -10,7 +10,8 @@ import AuthProvider from '@/context/AuthProvider';
 const AppLayout = ({ page }: AppLayoutProps) => {
   return (
     <div>
-      <AuthProvider>
+      
+      {/* <AuthProvider> */}
         <LoadingProvider>
           <GlobalProvider>
             <LoadingWrapper>
@@ -22,7 +23,7 @@ const AppLayout = ({ page }: AppLayoutProps) => {
             <Footer />
           </GlobalProvider>
         </LoadingProvider>
-      </AuthProvider>
+      {/* </AuthProvider> */}
     </div>
   )
 }

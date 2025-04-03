@@ -26,8 +26,6 @@ const authOptions: NextAuthOptions = {
           throw new Error(data.message);
         }
 
-        console.log(data,'login response')
-        // Return the user object containing necessary details
         return {
           id: data.user._id,
           name: data.user.name,
