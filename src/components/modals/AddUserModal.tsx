@@ -10,16 +10,26 @@ import { addUserAndRevalidate } from '@/actions/userActions';
 const AddUserModal = () => {
 
     const [open, setOpen] = useState(false)
+    const [user, setUser] = useState<User | null>(null)
     const handleToggle = () => {
         setOpen(!open)
     }
+    interface User {
+        email: string;
+        password: string
+        // Add other properties as needed
+    }
+
 
     const onSubmit = async (data: any) => {
+       const res = await addUserAndRevalidate(data); // Call server actions
+        if (res) {
+            setUser(res)
+        }
 
-        await addUserAndRevalidate(data); // Call server action
-        handleToggle();
-      };
-    
+        // handleToggle();
+    };
+
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -28,9 +38,23 @@ const AddUserModal = () => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Add User</DialogTitle>
+                    <DialogTitle>{user ? "User Details" : "Add User"}</DialogTitle>
                 </DialogHeader>
-                <UserAddForm handleToggle={handleToggle} handleSubmit={onSubmit} />
+                {user ?
+                    <div className='flex flex-col gap-4'>
+                        <div className='flex flex-row justify-between'>
+                            <div>Email</div>
+                            <div>{user?.email}</div>
+                        </div>
+                        {/* <div> */}
+                        <div className='flex flex-row justify-between'>
+                            <div>Password</div>
+                            <div>{user?.password}</div>
+                        </div>
+                    </div>
+                    :
+                    <UserAddForm handleToggle={handleToggle} handleSubmit={onSubmit} />
+                }
             </DialogContent>
         </Dialog>
     )

@@ -5,13 +5,10 @@ import Link from "next/link";
 import Navbar from "../Navbar";
 import LogoutButton from "./LogoutButton";
 import LoginButton from "./LoginButton";
-import { useSession } from "next-auth/react";
+import { useGlobalState } from "@/context/GlobalContext";
 
 export default function Header() {
-    // const width = useWindowWidth()
-    const { data: session, status } = useSession(); // ✅ Track session changes
-
-
+const {state} = useGlobalState()
 
     return (
         <header className="bg-white shadow-md w-full fixed left-0 px-1 py-3 sm:px-6 top-0 z-10">
@@ -26,10 +23,10 @@ export default function Header() {
 
                 {/* Navbar */}
                 <div className="flex gap-6 items-center">
-                    <Navbar user={session?.user} />
+                    <Navbar user={state.user} />
 
                     {/* Login and logout button */}
-                    {session?.user ?
+                    { state.user?.email ?
                         // <button
                         //     onClick={handleLogout}
                         //     className="bg-black rounded-md text-white cursor-pointer hover:bg-gray-800 px-4 py-2 transition"

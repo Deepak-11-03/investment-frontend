@@ -1,7 +1,7 @@
-import { Schema, model, models, Types, Document } from "mongoose";
+import { Schema, model, models, Types, Document, Model } from "mongoose";
 
 // interface for TypeScript
-export interface ITransaction extends Document {
+interface ITransaction extends Document {
     userId: Types.ObjectId;
     amount: string;
     type: "credit" | "debit";
@@ -34,7 +34,14 @@ const TransactionSchema = new Schema<ITransaction>(
     { timestamps: true }
 );
 
+// 🔹 Exclude __v when converting to JSON
+TransactionSchema.set("toJSON", {
+    transform: (doc, ret) => {
+        delete ret.__v;
+        return ret;
+    }
+});
 
-const Transaction = models.transactions || model<ITransaction>("transactions", TransactionSchema);
+const Transaction: Model<ITransaction> = models.transactions || model<ITransaction>("transactions", TransactionSchema);
 
 export default Transaction;

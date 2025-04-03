@@ -1,174 +1,46 @@
-// // import { NextMiddlewareWithAuth } from './../node_modules/next-auth/src/next/middleware';
-// // import { NextResponse } from "next/server";
-// // import type { NextRequest } from "next/server";
-// // import { jwtVerify } from 'jose'
-// // import { getToken } from 'next-auth/jwt';
-// // export {default} from 'next-auth/middleware'
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { jwtVerify } from "jose";
+import { COOKIE_TOKEN } from "./constants/constant";
 
-// // // export {auth as middleware}  
+export async function middleware(request: NextRequest) {
+    const path = request.nextUrl.pathname;
+    const token = request.cookies.get(COOKIE_TOKEN)?.value || "";
+    const publicRoutes = ["/auth/login"];
 
+    console.log("Middleware triggered on:", path);
 
-// // const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET || "");
+    let verifiedToken: any = null;
 
-// // export async function middleware(request: NextRequest) {
-// //     const path = request.nextUrl.pathname;
-// //     const token = request.cookies.get("next-auth.session-token")?.value || "";
+    if (token) {
+        try {
+            const secretKey = new TextEncoder().encode(process.env.JWT_SECRET!);
+            verifiedToken = await jwtVerify(token, secretKey);
+        } catch (error: any) {
+            console.error(" Token verification failed:", error.message);
+            const response = NextResponse.redirect(new URL("/auth/login", request.nextUrl));
+            response.cookies.set(COOKIE_TOKEN, "", { path: "/", httpOnly: true, secure: true, maxAge: 0 });
+            return response;
+        }
+    }
 
-// //     const a = await getToken({req:request})
-// //     console.log(a,'aaaaaaaaaaaaaaaa',token)
+    if (!verifiedToken && !path.startsWith("/auth/login")) {
+        const response = NextResponse.redirect(new URL("/auth/login", request.nextUrl));
+        response.headers.set("x-auth-error", "Unauthorized access");
+        return response;
+    }
 
-// //     const isPublicPath =path === "/auth/login" || path === "/signup" || path === '/' || path === '/about' || path === '/contact-us '
+    if (!verifiedToken?.payload?.isAdmin && path.startsWith("/manage-user")) {
+        return NextResponse.redirect(new URL("/", request.nextUrl));
+    }
 
-// //     let userData: any = null;
+    if (verifiedToken && publicRoutes.includes(path)) {
+        return NextResponse.redirect(new URL("/", request.nextUrl));
+    }
 
-// //     // Verify JWT Token
-// //     if (token) {
-// //         try {
-// //             const tokenData = await jwtVerify(token, SECRET_KEY); // Decode token
-// //             userData = tokenData.payload
-// //         } catch (error) {
-// //             console.log(error,'ssssssssssssssssssssss')
-// //             return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
-// //         }
-// //     }
-
-// //     if (path === "/manage-user" && (!userData || !userData.isAdmin)) {
-// //         return NextResponse.redirect(new URL("/", request.nextUrl)); // Redirect to home
-// //     }
-
-
-
-// //     // restrict access to protected API routes
-// //     if (path.startsWith("/api/user") && !token) {
-// //         console.log(" Unauthorized API request:", path);
-// //         return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 400 });
-// //     }
-
-// //     //  If user is logged in and tries to access public pages, redirect to home
-// //     if (isPublicPath && token) {
-// //         const previousUrl = request.headers.get("referer") || "/";
-// //         console.log(" Redirecting logged-in user from public path to '/'");
-// //         return NextResponse.redirect(new URL("/", request.nextUrl));
-// //     }
-
-// //     //  If user is not logged in and tries to access protected pages, redirect to login
-// //     if (!isPublicPath && !token) {
-// //         console.log(" Redirecting unauthenticated user to '/auth/login'");
-// //         return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
-// //     }
-
-// //     //  Allow request to continue
-// //     return NextResponse.next();
-// // }
-
-// // // middleware to protect pages & API routes
-
-
-// // // export async function middleware
-
-// // export const config = {
-// //     matcher: [
-// //         // "/",            // Protect home page
-// //         "/profile",     // Protect profile page
-// //         "/auth/login",  // Public page
-// //         "/signup",      // Public page
-// //         "/manage-user", // Public page
-// //         "/api/user",  //  Protect all API routes under "/api/"
-// //     ],
-// // };
-
-
-
-
-// import { NextRequest, NextResponse } from "next/server";
-// import { withAuth, NextRequestWithAuth } from "next-auth/middleware";
-// import { cookies } from "next/headers";
-// const SECRET_KEY = process.env.JWT_SECRET || "";
-
-
-// export default withAuth(
-//   async function middleware(request: NextRequestWithAuth) {
-//     const path = request.nextUrl.pathname;
-//     const token = request.nextauth.token;
-//     // const token = await getToken({ req: request });
-
-//     const isPublicPath =
-//       path === "/auth/login" ||
-//       path === "/signup" ||
-//       path === "/" ||
-//       path === "/about" ||
-//       path === "/contact-us";
-
-
-//     if (path === "/manage-user" && (!token?.isAdmin)) {
-//       return NextResponse.redirect(new URL("/", request.nextUrl)); // Redirect to home
-//     }
-
-//     if (path === "/auth/login" && token) {
-//       return NextResponse.redirect(new URL("/", request.nextUrl)); // Redirect to home
-//     }
-
-//     // restrict access to protected API routes
-//     // if (path.startsWith("/api/user") && !token) {
-//     //   return NextResponse.json(
-//     //     { success: false, message: "Unauthorized" },
-//     //     { status: 400 }
-//     //   );
-//     // }
-
-//     // If user is logged in and tries to access public pages, redirect to home
-//     if (isPublicPath && token) {
-//       return NextResponse.redirect(new URL("/", request.nextUrl));
-//     }
-//     if (!isPublicPath && !token) {
-//       return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
-//     }
-
-//     // Allow request to continue
-//     return NextResponse.next();
-//   },
-//   {
-//     callbacks: {
-//       authorized: async ({ req, token }: { req: NextRequest, token: any}) => {
-//         // console.log(token, 'token')
-//         // if(token.token){
-//           (await cookies()).set("session", 'dsdsd');
-//         // }
-//         if (req.nextUrl.pathname === '/manage/user') {
-//           return token.isAdmin;
-//         }
-     
-//         // const token = await getToken({ req });
-//         return !!token; // Ensure token exists
-//       },
-//     },
-//     secret: SECRET_KEY,
-//     pages: {
-//       signIn: "/auth/login",
-//     },
-//   },
-// );
-
-// export const config = {
-//   matcher: [
-//     "/account",
-//     "/manage-user",
-//     "/auth/login",
-//     // "/api/auth/me",
-//     "/signup",
-//   ],
-// };
-
-
-export  {auth as middleware} from '@/auth'
-
+    return NextResponse.next();
+}
 
 export const config = {
-  matcher: [
-    "/account",
-    "/manage-user",
-    "/auth/login",
-    // "/api/auth/me",
-    "/signup",
-  ],
+    matcher: ["/profile", "/account", "/manage-user", "/api/user", "/auth/login"],
 };

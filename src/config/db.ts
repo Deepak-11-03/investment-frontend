@@ -1,10 +1,11 @@
+import { MESSAGE } from "@/constants/message";
 import { createAdmin } from "@/helpers/createAdmin";
 import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
 
 if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable");
+  throw new Error(MESSAGE.DB_URL_NOT_PROVIDED);
 }
 
 let cached = (global as any).mongoose || { conn: null, promise: null };

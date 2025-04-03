@@ -1,63 +1,41 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createUser } from "@/services/user.service";
+import httpRequest from "@/services/fetch.service";
+import { apiEndPoints } from "@/constants/apiEndPoints";
 
 
 
 
 export async function addUserAndRevalidate(data: any) {
   try {
-    const response = await createUser(data); // Call your user creation service
+    const response = await httpRequest(apiEndPoints.USER.CREATE,'POST',data);
+    const userData = response?._doc || response;
     revalidatePath("/manage-user"); // Revalidate the cache for UserList
-    return response?.data;
+    return userData;
   } catch (error) {
     console.error("Error adding user:", error);
     throw error;
   }
 }
+export async function getUserProfile() {
+  return httpRequest(apiEndPoints.AUTH.VALIDATE_ME);
+}
 
 export const getAllUsersData = async () => {
-  try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
-          cache: "no-store",
-          credentials: "include",
-          //  next: { revalidate: 60 } 
-      });
+  return httpRequest(apiEndPoints.USER.GET);
+};
+export const getMyAccountData = async () => {
+  return httpRequest(apiEndPoints.AUTH.MY_PROFILE);
 
-      if (!res.ok) {
-          console.error("Error response:", res.status, res.statusText);
-          return []; // Ensure it returns an array
-      }
-
-      const data = await res.json();
-      return Array.isArray(data?.data) ? data.data : []; // Ensure it returns an array
-  } catch (error) {
-      console.error("Error fetching users:", error);
-      return []; // Return an empty array in case of an error
-  }
 };
 
-export async function getUserProfile() {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-      cache: "no-store",
-      credentials: "include",
-      // next: { revalidate: 60 }  // Include cookies if needed
-      // headers: {
-      //   "Content-Type": "application/json",
-      // },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch user profile: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    return data?.data || {};
-  } catch (error) {
-    return null;
-  }
+export async function deleteUserProfile(id:string) {
+// console.log(id)
+// return
+  const response =  httpRequest(`${apiEndPoints.USER.PATCH}${id}`,"DELETE");
+  revalidatePath("/manage-user");
+  return response
 }
 
 

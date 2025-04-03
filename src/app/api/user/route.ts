@@ -4,18 +4,20 @@ import generatePassword from "@/utils/generatePassword";
 import { NextRequest, NextResponse } from "next/server";
 import Transaction from "@/models/Transaction";
 
-import authOptions from "@/authOptions";
-import { getServerSession } from "next-auth/next";
-import { userAddValidation } from "@/utils/validation";
-import { cookies } from "next/headers";
 
-export async function POST(req: Request) {
+import { userAddValidation } from "@/utils/validation";
+import { verifyToken } from "@/middleware/verifyToken";
+import { MESSAGE } from "@/constants/message";
+
+export async function POST(req: NextRequest) {
     await connectDB()
 
-    const session = await getServerSession(authOptions);
+    const authResponse: any = await verifyToken(req);
 
-    if (session?.user.isAdmin === false) {
-        return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    if (!authResponse.success) return authResponse;
+
+    if (!authResponse?.decoded?.isAdmin) {
+        return NextResponse.json({ success: false, message: MESSAGE.ADMIN_ACCESS_REQUIRED }, { status: 401 });
     }
 
     const body = await req.json();
@@ -23,20 +25,14 @@ export async function POST(req: Request) {
 
     if (!parsedData.success) {
         return NextResponse.json(
-            { success: false, message: "Validation Error", errors: parsedData.error.errors },
+            { success: false, message: MESSAGE.VALIDATION_ERROR, errors: parsedData.error.errors },
             { status: 400 }
         );
     }
 
     const { name, email, phone, amount, date } = parsedData.data;
 
-    // const token = (await cookies()).get("next-auth.session-token")?.value;
-    
-    // console.log((await cookies()).getAll(), 'token', process.env.JWT_SECRET)
-    // Verify token
-
-
-    const userExist = await User.findOne({ email: email, phone: phone });
+    const userExist = await User.findOne({ email: email, phone: phone, isDeleted: false });
 
     if (userExist) {
         return NextResponse.json({ success: false, message: "User with this email or phone number is already exist" }, { status: 400 });
@@ -50,22 +46,27 @@ export async function POST(req: Request) {
         await Transaction.create({ userId: user._id, amount, date, type: "credit" })
     }
 
-    return NextResponse.json({ success: true, message: "User created", data: {...user} }, { status: 200 });
+    return NextResponse.json({ success: true, message: "User created", data: { ...user } }, { status: 200 });
 
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
 
     try {
-console.log('first')
+
         await connectDB();
-        // const 
-//    const cookie = (await cookies()).getAll()
-// console.log(cookie)
+
+        const authResponse: any = await verifyToken(req);
+
+        if (!authResponse.success) return authResponse;
+
+        if (!authResponse?.decoded?.isAdmin) {
+            return NextResponse.json({ success: false, message: "Unauthorized: Invalid token" }, { status: 401 });
+        }
 
         const users = await User.aggregate([
             {
-                $match: { isAdmin: false } // Get only non-admin users
+                $match: { isAdmin: false,isDeleted:false } // Get only non-admin users
             },
             {
                 $lookup: {
@@ -82,12 +83,12 @@ console.log('first')
                             $map: {
                                 input: "$transactions",
                                 as: "transaction",
-                                in: { 
+                                in: {
                                     $cond: [
-                                        { $eq: ["$$transaction.type", "credit"] }, 
-                                        { $toDouble: "$$transaction.amount" }, 
-                                        0 
-                                    ] 
+                                        { $eq: ["$$transaction.type", "credit"] },
+                                        { $toDouble: "$$transaction.amount" },
+                                        0
+                                    ]
                                 }
                             }
                         }
@@ -97,12 +98,12 @@ console.log('first')
                             $map: {
                                 input: "$transactions",
                                 as: "transaction",
-                                in: { 
+                                in: {
                                     $cond: [
-                                        { $eq: ["$$transaction.type", "debit"] }, 
-                                        { $toDouble: "$$transaction.amount" }, 
-                                        0 
-                                    ] 
+                                        { $eq: ["$$transaction.type", "debit"] },
+                                        { $toDouble: "$$transaction.amount" },
+                                        0
+                                    ]
                                 }
                             }
                         }
@@ -121,11 +122,11 @@ console.log('first')
                     totalCredit: 1,
                     totalDebit: 1,
                     totalAmount: 1,
-                    createdAt:1
+                    createdAt: 1
                 }
             }
         ]);
-               
+
         // if (!user) {
         //     return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
         // }
@@ -134,5 +135,7 @@ console.log('first')
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
+
+
 
 

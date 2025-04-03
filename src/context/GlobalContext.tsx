@@ -1,120 +1,54 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { checkUser, getToken } from "@/services/user.service";
-// import { useLoadingState } from "./LoadingContext";
-import { GlobalContextType, GlobalState } from "@/types/type";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import Cookies from "js-cookie";
-import { signOut, useSession } from "next-auth/react";
-// import { useSession } from "next-auth/react";
+import { GlobalContextType, GlobalState } from "@/types/type";
+import { getUserProfile } from "@/actions/userActions";
+import { COOKIE_TOKEN } from "@/constants/constant";
+// import { getUserProfile } from "@/services/httpService"; // Import API service
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 
 export const GlobalProvider = ({ children }: { children: ReactNode }) => {
-  // const { setLoading } = useLoadingState();
-  const { data: session, status } = useSession();
-
   const [state, setGlobalState] = useState<GlobalState>({
     user: null,
-    token: null,
+    token: Cookies.get(COOKIE_TOKEN) || null, // Get token from cookies
   });
+
+  const [loading, setLoading] = useState(true);
 
   const setState = (newState: Partial<GlobalState>) => {
     setGlobalState((prevState) => ({ ...prevState, ...newState }));
   };
 
-
+  // 🔹 Validate user on refresh
   useEffect(() => {
-    if(session?.user.token){
-        localStorage.setItem('token',session?.user?.token)
-    }    
-  }, [session, status]);
-
-
-
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     setLoading(true);
-
-  //     try {
-  //       // Fetch token from our server API instead of using next/headers
-  //       const tokenData:any = await getToken()
-  //       console.log(tokenData)
-  //       // const { token } = await tokenRes.json();
-
-
-  //       if (!tokenData.token) {
-  //         setLoading(false);
-  //         return;
-  //       }
-
-  //       Cookies.set("token", tokenData?.token); // Store tokenData?.token in client-side cookie
-  //       setState({token: tokenData?.token });
-
-  //       // Fetch user details
-  //       if(tokenData.token){
-
-  //         const res: any = await checkUser();
-  //         setState({ user: res.data });
-  //       }
-
-  //       setTimeout(() => {
-  //         setLoading(false);
-  //       }, 1000);
-  //     } catch (error) {
-  //       console.error("Failed to fetch user", error);
-  //       setState({ user: null, token: null });
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchUser();
-  // }, []);
-
-  // Logout function
+    const fetchUser = async () => {
   
-  // useEffect(() => {
 
+      try {
+        const user = await getUserProfile(); // Fetch user profile
+        if (user) {
+          setState({ user: user });
+        } else {
+          // Cookies.remove("token"); // Remove invalid token
+          setState({ user: null, token: null });
+        }
+      } catch (error) {
+        console.error("User validation failed", error);
+        setState({ user: null, token: null });
+        // Cookies.remove("token");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //   if (status === "loading") return; // Avoid fetching during session loading
-
-  //   console.log(session)
-  //   setLoading(true);
-
-  //   // if (session) {
-  //   //   setGlobalState({
-  //   //     user: session.user
-  //   //       ? { 
-  //   //           ...session.user, 
-  //   //           isAdmin: null, 
-  //   //           name: session.user.name ?? null, // Ensure name is either string or null
-  //   //           email: session.user.email ?? null // Ensure email is either string or null
-  //   //         } 
-  //   //       : null,
-  //   //     token: "session-token", // No need for JWT manually
-  //   //   });
-  //   // } else {
-  //   //   setGlobalState({
-  //   //     user: null,
-  //   //     token: null,
-  //   //   });
-  //   // }
-
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //   }, 1000);
-  // }, [session, status]);
-  
-  const logout = () => {
-    signOut({
-      redirect: false,
-    });
-  };
-
+    fetchUser();
+  }, []);
 
   return (
-    <GlobalContext.Provider value={{ state, setState, logout }}>
-      {children}
+    <GlobalContext.Provider value={{ state, setState }}>
+      {!loading && children} {/* Render only after validation */}
     </GlobalContext.Provider>
   );
 };

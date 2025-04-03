@@ -4,8 +4,13 @@ import { Button } from '../ui/button'
 import { CalendarIcon } from 'lucide-react'
 import { Calendar } from '../ui/calendar'
 import moment from 'moment'
+import { DateAfter } from 'react-day-picker'
 
 const DatePicker = ({ date, setDate, required = false, error }:any) => {
+
+
+  // Match days after the 2nd of February 2019
+  const matcher: DateAfter = { after: new Date() };
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -25,11 +30,13 @@ const DatePicker = ({ date, setDate, required = false, error }:any) => {
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
+          disabled={matcher}
           mode="single"
           selected={date}
           onSelect={setDate}
           initialFocus
           required={required}
+          
         />
       </PopoverContent>
     </Popover>
