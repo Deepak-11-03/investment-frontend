@@ -1,5 +1,5 @@
 import { Login } from "@/types/type";
-import apiClient, { getData, postData } from "./http.service";
+import apiClient, { getData, patchData, postData } from "./http.service";
 import { errorHandler } from "./error.service";
 
 
@@ -34,6 +34,14 @@ export const userLogout = async () => {
 export const addTransaction = async (data:any) => {
     try {
       const response = await postData('/transaction', data)
+      return response;
+    } catch (error) {
+      return error
+    }
+  };
+export const updateTransaction = async (data:any,id:string) => {
+    try {
+      const response = await patchData(`/transaction/${id}`, data)
       return response;
     } catch (error) {
       return error

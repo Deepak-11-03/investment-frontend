@@ -68,6 +68,17 @@ export const postData = async <T = any>(
   }
 };
 
+export const patchData = async <T = any>(
+  endpoint: string,
+  data: any
+): Promise<ApiResponse<T>> => {
+  try {
+    const response = await apiClient.patch(endpoint, data);
+    return { data: response.data, status: response.status };
+  } catch (error: any) {
+    return Promise.reject(error);
+  }
+};
 export const putData = async <T = any>(
   endpoint: string,
   data: any

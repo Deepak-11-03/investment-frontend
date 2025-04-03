@@ -26,8 +26,8 @@ export async function GET(req: NextRequest) {
 
         if (!authResponse.success) return authResponse;
 
-        if (!authResponse?.decoded) {
-            return NextResponse.json({ success: false, message: "Unauthorized: Invalid token" }, { status: 401 });
+        if (!authResponse.decoded?.isAdmin) {
+            return NextResponse.json({ success: false, message: "Unauthorized: Admin access required" }, { status: 403 });
         }
 
         const users = await User.aggregate([

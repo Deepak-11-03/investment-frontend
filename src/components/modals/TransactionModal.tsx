@@ -11,12 +11,8 @@ import ErrorField from '../common/ErrorField';
 import SelectField from '../common/SelectField';
 import { TRANSACTION } from '@/constants/constant';
 
-const TransactionModal = ({ transaction, handleUpdate }:any) => {
+const TransactionModal = ({ open, setOpen, handleToggle, transaction, handleSubmit }:any) => {
 
-  const [open, setOpen] = useState(false)
-    const handleToggle = () => {
-        setOpen(!open)
-    }
 
 
     return (
@@ -33,15 +29,27 @@ const TransactionModal = ({ transaction, handleUpdate }:any) => {
                <DialogDescription asChild>
                 
                     <Formik
-                        initialValues={{ type: '', amount: '', date: '' }}
+                        initialValues={{ type: transaction?.type || '', amount: transaction?.amount || '', date: transaction?.date || '' }}
                         //   validationSchema={validationSchema}
 
                         onSubmit={async (values, { setSubmitting }) => {
-                            setSubmitting(true)
-                            await handleUpdate(values)
-                            handleToggle()
-                            setSubmitting(false)
+                            try {
+                                setSubmitting(true);
+                                const formData:any = { ...values };
+
+                                if (transaction?._id) {
+                                    formData.id = transaction._id;
+                                }
+
+                                await handleSubmit(formData);
+                                handleToggle();
+                            } catch (error) {
+                                console.error("Submission error:", error);
+                            } finally {
+                                setSubmitting(false);
+                            }
                         }}
+
                     >
                         {({ errors, touched, isSubmitting, setFieldValue, isValid, values }) => (
                             <Form className='flex flex-col gap-4'>
@@ -49,10 +57,15 @@ const TransactionModal = ({ transaction, handleUpdate }:any) => {
 
                                 <div className='flex flex-col gap-2   w-full'>
                                     <InputField type="text" name="amount" label="Amount" error={
-                                        touched.amount ? errors.amount : ''
+                                        touched.amount && typeof errors.amount === 'string' ? errors.amount : undefined
                                     } placeholder="Enter amount" onKeyPress={numOnly} />
 
-                                    <SelectField label='Type' options={TRANSACTION} value={values.type} handleChange={(val) => setFieldValue('type', val)} />
+                                    <SelectField label='Type' options={TRANSACTION}
+                                        value={values.type} 
+                                        handleChange={(val) => setFieldValue('type', val)} 
+                                        error={
+                                            touched.type && typeof errors.type === 'string' ? errors.type : undefined
+                                        }/>
 
                                     <div className='w-full'>
                                         <label className="block text-sm/6 font-medium text-gray-900">
@@ -63,7 +76,7 @@ const TransactionModal = ({ transaction, handleUpdate }:any) => {
                                             error={touched.date ? errors.date : ''}
                                             setDate={(date: any) => setFieldValue(`date`, date)}
                                         />
-                                        {touched.date && errors?.date ? <ErrorField message={errors.date} /> : ''}
+                                        {touched.date && typeof errors.date === 'string' ? <ErrorField message={errors.date} /> : ''}
                                     </div>
                                 </div>
 

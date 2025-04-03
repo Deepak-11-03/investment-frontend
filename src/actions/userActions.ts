@@ -24,6 +24,10 @@ export async function getUserProfile() {
 export const getAllUsersData = async () => {
   return httpRequest("/user");
 };
+export const getMyAccountData = async () => {
+  return httpRequest(`/auth/account`);
+
+};
 
 export async function deleteUserProfile(id:string) {
 // console.log(id)

@@ -11,7 +11,7 @@ export async function createAdmin(): Promise<void> {
               phone: process.env.ADMIN_CONTACT,
               isAdmin:true
           }
-        const response = await User.findOneAndUpdate({email: adminData.email},{$set:{password:adminData.password}})
+        const response = await User.findOneAndUpdate({email: adminData.email,isDeleted:false},{$set:{password:adminData.password}})
 
         if(!response){
             await User.create(adminData)
