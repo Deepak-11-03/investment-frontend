@@ -5,7 +5,11 @@ import AppLayout from "@/components/shared/AppLayout";
 import { Toaster } from "@/components/ui/sonner";
 
 
-const geistSans = Geist({ subsets: ["latin"], weight: ["100", "400", "700", "900"] });
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -24,7 +28,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.className} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
 
         <AppLayout page={children}/>
