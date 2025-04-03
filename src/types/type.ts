@@ -87,5 +87,9 @@ export interface UserDetailTypes {
     name: string;
     email: string;
     phone: string;
-    transactions: Transaction[]
+    transactions: Transaction[];
+    remainingAmount:string;
+    totalCredit:string;
+    totalDebit:string;
+
 }

@@ -23,7 +23,6 @@ const UserPage = () => {
                     Back
                 </Button>
             </ToolTip>
-            <h1 className='text-3xl mt-4'>User Details</h1>
 
             {loading ? (
                 <Shimmer classes='w-full h-12 my-3' length={5} />

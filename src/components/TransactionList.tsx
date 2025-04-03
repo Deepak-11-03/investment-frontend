@@ -10,7 +10,7 @@ interface Props {
 
 const TransactionList = ({ transactions }: Props) => {
     return (
-        <div className='max-h-[60vh] overflow-y-auto  mt-10 flex flex-col gap-2'>
+        <div className='max-h-[60vh] overflow-y-auto  mt-4 flex flex-col gap-2'>
             {transactions && transactions.length > 0 ? (
                 transactions.map((item: Transaction) =>
                     <Card key={item?._id} className='p-3 '>

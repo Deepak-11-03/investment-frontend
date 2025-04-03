@@ -79,16 +79,17 @@ export async function GET(req: NextRequest) {
             },
             {
                 $addFields: {
-                    totalAmount: { $subtract: ["$totalCredit", "$totalDebit"] }
+                    remainingAmount: { $subtract: ["$totalCredit", "$totalDebit"] }
                 }
             },
             {
                 $project: {
                     name: 1, // Keep only relevant fields
                     email: 1,
+                    phone: 1,
                     totalCredit: 1,
                     totalDebit: 1,
-                    totalAmount: 1,
+                    remainingAmount: 1,
                     transactions: 1,
                     createdAt: 1
                 }
