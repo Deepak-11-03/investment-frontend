@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import Cookies from "js-cookie";
 import { GlobalContextType, GlobalState } from "@/types/type";
 import { getUserProfile } from "@/actions/userActions";
+import { COOKIE_TOKEN } from "@/constants/constant";
 // import { getUserProfile } from "@/services/httpService"; // Import API service
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
@@ -11,7 +12,7 @@ const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   const [state, setGlobalState] = useState<GlobalState>({
     user: null,
-    token: Cookies.get("token") || null, // Get token from cookies
+    token: Cookies.get(COOKIE_TOKEN) || null, // Get token from cookies
   });
 
   const [loading, setLoading] = useState(true);

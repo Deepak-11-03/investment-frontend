@@ -3,6 +3,7 @@ import connectDB from "@/config/db";
 import User from "@/models/User";
 import { verifyToken } from "@/middleware/verifyToken";
 import mongoose from "mongoose";
+import { MESSAGE } from "@/constants/message";
 
 
 export async function GET(req: NextRequest) {
@@ -78,11 +79,11 @@ export async function GET(req: NextRequest) {
       ]);
 
     if (!users || !users.length) {
-      return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+      return NextResponse.json({ success: false, message: MESSAGE.USER_NOT_FOUND }, { status: 404 });
     }
 
     return NextResponse.json({ success: true, data: users[0] }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ success: false, message: MESSAGE.INTERNAL_ERROR }, { status: 500 });
   }
 }

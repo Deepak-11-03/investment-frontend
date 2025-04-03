@@ -1,3 +1,4 @@
+import { MESSAGE } from "@/constants/message";
 import axios, { AxiosInstance, AxiosError, AxiosResponse } from "axios";
 import { toast } from "sonner";
 
@@ -17,16 +18,15 @@ apiClient.interceptors.response.use(
     // console.error("API Error:", status, message);
 
     if (typeof window !== "undefined") {
-      // ✅ Client-side error handling
       if (status === 401) {
-        toast.error("Session expired. Please log in again.");
+        toast.error(MESSAGE.SESSION_EXPIRED);
         // localStorage.removeItem("token");
         // window.location.href = "/auth/login";
       } else {
         toast.error(
           typeof message === "string"
             ? message
-            : ((message as { message?: string })?.message || "An error occurred")
+            : ((message as { message?: string })?.message || MESSAGE.INTERNAL_ERROR)
         );
       }
     }
@@ -35,7 +35,6 @@ apiClient.interceptors.response.use(
   }
 );
 
-// ✅ Standardized API Response Type
 interface ApiResponse<T = any> {
   data?: T;
   status: number;
@@ -43,7 +42,7 @@ interface ApiResponse<T = any> {
   success?: boolean;
 }
 
-// ✅ Generic API Helper Functions
+
 export const getData = async <T = any>(
   endpoint: string,
   params = {}

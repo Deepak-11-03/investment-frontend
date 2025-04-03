@@ -9,7 +9,7 @@ const DeleteConfirmModal = ({user}:any) => {
     const [isDeleting, setIsDeleting]= useState(false)
     const handleDelete= async()=>{
 setIsDeleting(true)
-await deleteUserProfile(user?._id)
+const res = await deleteUserProfile(user?._id)
 setIsDeleting(false)
 }
 

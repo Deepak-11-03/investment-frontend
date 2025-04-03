@@ -11,13 +11,12 @@ async function httpRequest(
     const token = (await cookies()).get("token")?.value;
 
     if (!token) {
-        console.error("No token found in cookies");
         return null;
     }
 
     const headers: HeadersInit = {
         ...extraHeaders, // Allow extra headers if needed
-        Cookie: `token=${token}`, // ✅ Automatically attach token
+        Cookie: `token=${token}`, 
         "Content-Type": "application/json",
     };
 
@@ -31,7 +30,7 @@ async function httpRequest(
         options.body = JSON.stringify(body);
     }
 
-    const res = await fetch(`${API_BASE_URL}${endpoint}`, options);
+    const res:Response = await fetch(`${API_BASE_URL}${endpoint}`, options);
 
     let response = await res?.json()
 

@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
+import { COOKIE_TOKEN } from "./constants/constant";
 
 export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
-    const token = request.cookies.get("token")?.value || "";
+    const token = request.cookies.get(COOKIE_TOKEN)?.value || "";
     const publicRoutes = ["/auth/login"];
 
     console.log("Middleware triggered on:", path);
@@ -18,7 +19,7 @@ export async function middleware(request: NextRequest) {
         } catch (error: any) {
             console.error(" Token verification failed:", error.message);
             const response = NextResponse.redirect(new URL("/auth/login", request.nextUrl));
-            response.cookies.set("token", "", { path: "/", httpOnly: true, secure: true, maxAge: 0 });
+            response.cookies.set(COOKIE_TOKEN, "", { path: "/", httpOnly: true, secure: true, maxAge: 0 });
             return response;
         }
     }

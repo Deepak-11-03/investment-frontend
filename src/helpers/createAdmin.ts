@@ -1,3 +1,4 @@
+import { MESSAGE } from '@/constants/message';
 import User from '@/models/User';
 import { postData } from '@/services/http.service';
 
@@ -11,14 +12,13 @@ export async function createAdmin(): Promise<void> {
               phone: process.env.ADMIN_CONTACT,
               isAdmin:true
           }
-        const response = await User.findOneAndUpdate({email: adminData.email,isDeleted:false},{$set:{password:adminData.password}})
+        const response = await User.findOneAndUpdate({ email: adminData.email, isAdmin: true, isDeleted: false }, { $set: { password: adminData.password } })
 
         if(!response){
             await User.create(adminData)
-            console.log('Admin user created successfully');
+            console.log(MESSAGE.ADMIN_CREATED);
         }
         
-        console.log('Admin already created');
     } catch (error) {
         console.error('Error creating admin user:', error);
         throw error;

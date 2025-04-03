@@ -7,6 +7,7 @@ import Transaction from "@/models/Transaction";
 
 import { userAddValidation } from "@/utils/validation";
 import { verifyToken } from "@/middleware/verifyToken";
+import { MESSAGE } from "@/constants/message";
 
 export async function POST(req: NextRequest) {
     await connectDB()
@@ -16,7 +17,7 @@ export async function POST(req: NextRequest) {
     if (!authResponse.success) return authResponse;
 
     if (!authResponse?.decoded?.isAdmin) {
-        return NextResponse.json({ success: false, message: "Unauthorized: You don't have permission" }, { status: 401 });
+        return NextResponse.json({ success: false, message: MESSAGE.ADMIN_ACCESS_REQUIRED }, { status: 401 });
     }
 
     const body = await req.json();
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
 
     if (!parsedData.success) {
         return NextResponse.json(
-            { success: false, message: "Validation Error", errors: parsedData.error.errors },
+            { success: false, message: MESSAGE.VALIDATION_ERROR, errors: parsedData.error.errors },
             { status: 400 }
         );
     }

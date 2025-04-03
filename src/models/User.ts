@@ -1,4 +1,4 @@
-import { Schema, model, models, Document } from "mongoose";
+import { Schema, model, models, Document, Model } from "mongoose";
 
 
 // interface for TypeScript
@@ -7,8 +7,8 @@ export interface IUser extends Document {
     email: string;
     phone: string;
     password: string;
-    isAdmin?: boolean; 
-    isDeleted?: boolean; 
+    isAdmin: boolean; 
+    isDeleted: boolean; 
 }
 
 //  schema
@@ -44,6 +44,6 @@ const UserSchema = new Schema<IUser>(
     { timestamps: true }
 );
 
-const User = models.users || model<IUser>("users", UserSchema);
+const User:Model<IUser> = models.users || model<IUser>("users", UserSchema);
 
 export default User;
