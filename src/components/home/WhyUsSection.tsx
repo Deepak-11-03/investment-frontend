@@ -1,4 +1,4 @@
-import { WHY_CHOOST_US } from '@/constants/constant'
+import { WHY_CHOOSE_US } from '@/constants/constant'
 import Image from 'next/image'
 import React from 'react'
 
@@ -16,7 +16,7 @@ const WhyUsSection = () => {
         </div>
 
         <ul className='flex  pt-8'>
-          {WHY_CHOOST_US.slice(0, 2).map((item) =>
+          {WHY_CHOOSE_US.slice(0, 2).map((item) =>
             <li key={item.title} className="w-1/2">
               <h3 className="text-2xl font-normal ">
                 {item.title}
@@ -28,7 +28,7 @@ const WhyUsSection = () => {
           )}
         </ul>
       </div>
-      <Image src="/we-help.jpg" height={400} width={600} alt="we help " />
+      <Image src="/we-help.jpg" loading="lazy" height={400} width={600} alt="we help " />
     </div>
   )
 }

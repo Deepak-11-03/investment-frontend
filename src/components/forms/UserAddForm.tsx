@@ -1,13 +1,10 @@
-import { Field, FieldArray, Form, Formik } from 'formik'
-import React from 'react'
+import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import InputField from '../common/InputField'
 import { Button } from '../ui/button'
 import { numOnly } from '@/utils'
-import Image from 'next/image'
 import DatePicker from '../common/DatePicker'
 import ErrorField from '../common/ErrorField'
-import SelectField from '../common/SelectField'
 
 
 const validationSchema = Yup.object({

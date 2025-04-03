@@ -54,7 +54,7 @@ const UserList = async() => {
         <TableHead className="w-[250px] text-right ">Invested</TableHead>
         <TableHead className='w-[400px] text-center'>Date</TableHead>
         <TableHead className="text-right w-[100px]">Total Payout</TableHead>
-        <TableHead className="text-right">Manage</TableHead>
+          <TableHead className="text-right w-[120px]">Manage</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
@@ -65,7 +65,7 @@ const UserList = async() => {
         <TableCell className='text-center'>{moment(user?.createdAt).format("MMM DD yyyy hh:mm A")}</TableCell>
             <TableCell className="text-right">${user?.totalDebit}</TableCell>
         <TableCell className="text-right" >
-          <ManageUserMenu />
+          <ManageUserMenu user={user} />
         </TableCell>
       </TableRow>
         ))}

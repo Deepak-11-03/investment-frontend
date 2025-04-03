@@ -7,28 +7,27 @@ import { Button } from "../ui/button";
 import { Login, LoginFormProps } from "@/types/type";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { userLogin } from "@/services/user.service";
+import { useGlobalState } from "@/context/GlobalContext";
 
 const LoginForm = () => {
-const router = useRouter()
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false);
+const {setState} = useGlobalState()
 
-const handleSubmit = async (val: Login) => {
-  const result = await signIn("credentials", {
-    email: val.email,
-    password: val.password,
-    redirect: false,
-  });
+  const handleSubmit = async (val: Login) => {
 
-  if (result?.ok === false) {
-    toast.error(result.error);
-  } else {
-    toast.success('Login successful');
-    router.push('/');
-  }
-};
+    const result: any = await userLogin(val)
+
+    if (result.data) {
+      setState({user:result.data})
+      toast.success(result.message);
+      router.push('/');
+    }
+
+  };
 
 
   const onSubmit = async (val: Login) => {
@@ -58,7 +57,7 @@ const handleSubmit = async (val: Login) => {
         {({ errors, touched, isSubmitting }) => (
           <Form className="flex flex-col w-full gap-4 pt-8 sm:w-[24rem]">
             <InputField type="email" name="email" label="Email address" error={errors.email} placeholder="Enter email" />
-            
+
             <InputField type="password" name="password" label="Password" error={errors.password} placeholder="Enter password" />
             {/* {errors.password && <ErrorField message={errors.password}/> } */}
             <Button disabled={isLoading} type="submit" className="cursor-pointer" >

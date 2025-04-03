@@ -1,3 +1,4 @@
+import { MESSAGE } from "@/constants/message";
 import axios, { AxiosInstance, AxiosError, AxiosResponse } from "axios";
 import { toast } from "sonner";
 
@@ -14,16 +15,19 @@ apiClient.interceptors.response.use(
     const status = error.response?.status;
     const message = error.response?.data || error.message;
 
-    console.error("API Error:", status, message);
+    // console.error("API Error:", status, message);
 
     if (typeof window !== "undefined") {
-      // ✅ Client-side error handling
       if (status === 401) {
-        toast.error("Session expired. Please log in again.");
+        toast.error(MESSAGE.SESSION_EXPIRED);
         // localStorage.removeItem("token");
         // window.location.href = "/auth/login";
       } else {
-        toast.error(typeof message === "string" ? message : JSON.stringify(message) || "An error occurred");
+        toast.error(
+          typeof message === "string"
+            ? message
+            : ((message as { message?: string })?.message || MESSAGE.INTERNAL_ERROR)
+        );
       }
     }
 
@@ -31,14 +35,14 @@ apiClient.interceptors.response.use(
   }
 );
 
-// ✅ Standardized API Response Type
 interface ApiResponse<T = any> {
   data?: T;
   status: number;
   message?: string;
+  success?: boolean;
 }
 
-// ✅ Generic API Helper Functions
+
 export const getData = async <T = any>(
   endpoint: string,
   params = {}
@@ -56,13 +60,24 @@ export const postData = async <T = any>(
   data: any
 ): Promise<ApiResponse<T>> => {
   try {
-    const response = await apiClient.post(endpoint, data);
-    return { data: response.data, status: response.status };
+    const response:ApiResponse = await apiClient.post(endpoint, data);
+    return { data: response.data, status: response.status, success:response.success , message:response?.message };
   } catch (error: any) {
     return Promise.reject(error);
   }
 };
 
+export const patchData = async <T = any>(
+  endpoint: string,
+  data: any
+): Promise<ApiResponse<T>> => {
+  try {
+    const response = await apiClient.patch(endpoint, data);
+    return { data: response.data, status: response.status };
+  } catch (error: any) {
+    return Promise.reject(error);
+  }
+};
 export const putData = async <T = any>(
   endpoint: string,
   data: any
